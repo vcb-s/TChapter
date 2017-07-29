@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using TChapter.Util;
 
 namespace TChapter.Chapters
 {
@@ -40,20 +41,30 @@ namespace TChapter.Chapters
             }
         }
 
-        public void Save(ChapterTypeEnum chapterType, int index = 0)
+        public void Save(ChapterTypeEnum chapterType, string savePath, int index = 0, bool removeName = false, string extraData = "")
         {
+            if (string.IsNullOrWhiteSpace(savePath))
+                throw new Exception("The output path is empty");
             switch (chapterType)
             {
                 case ChapterTypeEnum.CUE:
-
+                    this.ToCUE(extraData, index, removeName).SaveAs(savePath);
                     break;
-
                 case ChapterTypeEnum.OGM:
+                    this.ToOGM(index, removeName).SaveAs(savePath);
                     break;
-
                 case ChapterTypeEnum.XML:
+                    this.ToXML(extraData, index, removeName).SaveAs(savePath);
                     break;
-
+                case ChapterTypeEnum.QPF:
+                    this.ToQPFILE(index).SaveAs(savePath);
+                    break;
+                case ChapterTypeEnum.TIMECODES:
+                    this.ToTIMECODES(index).SaveAs(savePath);
+                    break;
+                case ChapterTypeEnum.JSON:
+                    this.ToJSON(index, removeName).SaveAs(savePath);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(chapterType), chapterType, null);
             }

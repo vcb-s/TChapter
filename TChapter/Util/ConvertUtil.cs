@@ -27,7 +27,7 @@ namespace TChapter.Util
 {
     static class ConvertUtil
     {
-        public static string ToOGM(this MultiChapterData data, int index = 0, bool autoGenName = false)
+        public static StringBuilder ToOGM(this MultiChapterData data, int index = 0, bool autoGenName = false)
         {
             var self = data[index];
             var lines = new StringBuilder();
@@ -37,7 +37,7 @@ namespace TChapter.Util
                 lines.AppendLine($"CHAPTER{item.Number:D2}={item.Time2String(self.Expr)}");
                 lines.AppendLine($"CHAPTER{item.Number:D2}NAME={(autoGenName ? name() : item.Name)}");
             }
-            return lines.ToString();
+            return lines;
         }
 
         public static string[] ToQPFILE(this MultiChapterData data, int index = 0)
@@ -61,7 +61,7 @@ namespace TChapter.Util
                 .ToArray();
         }
 
-        public static StringBuilder ToXML(this MultiChapterData data, string lang, bool autoGenName, int index = 0)
+        public static StringBuilder ToXML(this MultiChapterData data, string lang, int index = 0, bool autoGenName = false)
         {
             var self = data[index];
             if (string.IsNullOrWhiteSpace(lang)) lang = "und";
@@ -98,7 +98,7 @@ namespace TChapter.Util
             return xml;
         }
 
-        public static StringBuilder ToCUE(this MultiChapterData data, string sourceFileName, bool autoGenName, int index = 0)
+        public static StringBuilder ToCUE(this MultiChapterData data, string sourceFileName, int index = 0, bool autoGenName = false)
         {
             var self = data[index];
             var cueBuilder = new StringBuilder();
@@ -117,7 +117,7 @@ namespace TChapter.Util
             return cueBuilder;
         }
 
-        public static StringBuilder ToJSON(this MultiChapterData data, bool autoGenName, int index = 0)
+        public static StringBuilder ToJSON(this MultiChapterData data, int index = 0, bool autoGenName = false)
         {
             var self = data[index];
             var jsonBuilder = new StringBuilder();
