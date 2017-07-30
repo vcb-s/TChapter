@@ -39,5 +39,10 @@ namespace TChapter.Chapters
         {
             Add(new ChapterInfo());
         }
+
+        public void Save(ChapterTypeEnum chapterType, string savePath, bool removeName = false, string extraData = "")
+        {
+            Save(chapterType, savePath, 0, removeName, extraData);
+        }
     }
 }

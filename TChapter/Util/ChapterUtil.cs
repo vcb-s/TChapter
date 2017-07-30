@@ -90,7 +90,7 @@ namespace TChapter.Util
         /// </summary>
         /// <param name="source">解析获得的分段章节</param>
         /// <returns></returns>
-        public static SingleChapterData CombineChapter(this MultiChapterData source)
+        public static SingleChapterData CombineChapter(this IChapterData source)
         {
             var fullChapter = new SingleChapterData(source.ChapterType)
             {

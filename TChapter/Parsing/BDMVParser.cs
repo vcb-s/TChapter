@@ -97,8 +97,7 @@ namespace TChapter.Parsing
                 var mpls = match.Groups["mpls"].Value;
                 var dur = match.Groups["dur"].Value;
                 if (!matched.Add(mpls)) continue;
-                var item = (new MPLSParser().Parse(Path.Combine(path, mpls)) as MultiChapterData)
-                    .CombineChapter();
+                var item = (new MPLSParser().Parse(Path.Combine(path, mpls))).CombineChapter();
                 item.Data.Duration = TimeSpan.Parse(dur);
                 list.Add(item);
             }

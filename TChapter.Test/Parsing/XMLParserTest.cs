@@ -49,7 +49,7 @@ namespace TChapter.Test.Parsing
             IChapterParser parser = new XMLParser();
             var data = parser.Parse(@"..\..\..\Assert\XML\sub_chapter.xml");
             Console.WriteLine(data);
-            foreach (var chapter in (data as MultiChapterData))
+            foreach (var chapter in data)
             {
                 foreach (var item in chapter.Chapters)
                 {

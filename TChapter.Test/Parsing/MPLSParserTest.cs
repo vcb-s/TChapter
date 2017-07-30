@@ -33,7 +33,7 @@ namespace TChapter.Test.Parsing
             IChapterParser parser = new MPLSParser();
             var data = parser.Parse(@"..\..\..\Assert\MPLS\00001-HD.mpls");
             Console.WriteLine(data);
-            foreach (var chapter in (data as MultiChapterData))
+            foreach (var chapter in data)
             {
                 foreach (var item in chapter.Chapters)
                 {
@@ -49,7 +49,7 @@ namespace TChapter.Test.Parsing
             IChapterParser parser = new MPLSParser();
             var data = parser.Parse(@"..\..\..\Assert\MPLS\00001-UHD.mpls");
             Console.WriteLine(data);
-            foreach (var chapter in (data as MultiChapterData))
+            foreach (var chapter in data)
             {
                 foreach (var item in chapter.Chapters)
                 {

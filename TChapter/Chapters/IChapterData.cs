@@ -17,9 +17,11 @@
 //
 // ****************************************************************************
 
+using System.Collections.Generic;
+
 namespace TChapter.Chapters
 {
-    public interface IChapterData
+    public interface IChapterData : IList<ChapterInfo>
     {
         ChapterTypeEnum ChapterType { get; }
 

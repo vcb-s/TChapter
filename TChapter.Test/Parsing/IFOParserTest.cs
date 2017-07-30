@@ -33,7 +33,7 @@ namespace TChapter.Test.Parsing
             IChapterParser parser = new IFOParser();
             var data = parser.Parse(@"..\..\..\Assert\IFO\VTS_05_0.IFO");
             Console.WriteLine(data);
-            foreach (var chapter in (data as MultiChapterData))
+            foreach (var chapter in data)
             {
                 foreach (var item in chapter.Chapters)
                 {
