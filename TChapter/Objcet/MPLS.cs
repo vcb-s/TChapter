@@ -118,9 +118,16 @@ namespace TChapter.Objcet
             var position = stream.Position;
             stream.Skip(1);
             PlaybackType = (byte)stream.ReadByte();
-            PlaybackCount = (ushort)stream.BEInt16();
-            UOMaskTable = new UOMaskTable(stream);
-            FlagField = (ushort)stream.BEInt16();
+            if (PlaybackType == 0x02 || PlaybackType == 0x03)
+            {
+                PlaybackCount = (ushort)stream.BEInt16();
+            }
+            else
+            {
+                stream.Skip(2);
+                UOMaskTable = new UOMaskTable(stream);
+                FlagField = (ushort)stream.BEInt16();
+            }
             stream.Skip(Length - (stream.Position - position));
         }
     }
