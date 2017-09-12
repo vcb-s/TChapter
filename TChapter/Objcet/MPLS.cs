@@ -588,6 +588,7 @@ namespace TChapter.Objcet
                 case 0x02:
                 case 0x1B:
                 case 0xEA:
+                case 0x20:
                 case 0x24:
                     _videoInfo = (byte)stream.ReadByte();
                     break;
@@ -607,6 +608,7 @@ namespace TChapter.Objcet
                     break;
                 case 0x90:
                 case 0x91:
+                case 0xA0:
                     LanguageCode = Encoding.ASCII.GetString(stream.ReadBytes(3));
                     break;
                 case 0x92:
