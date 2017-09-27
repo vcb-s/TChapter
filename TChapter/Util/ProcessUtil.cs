@@ -27,44 +27,90 @@ namespace TChapter.Util
 {
     public static class ProcessUtil
     {
-        public static async Task<StringBuilder> RunProcessAsync(string fileName, string args, string workingDirectory = "")
+        public static string WrapWithQuotes(this string str) => $"\"{str}\"";
+
+        public static Process StartProcess(string fileName, string args, string workingDirectory = "")
         {
-            using (var process = new Process
+            var process = new Process
             {
                 StartInfo =
                 {
-                    FileName = fileName, Arguments = args,
-                    UseShellExecute = false, CreateNoWindow = true,
-                    RedirectStandardOutput = true, RedirectStandardError = true
-                },
-                EnableRaisingEvents = true
-            })
-            {
-                if (!string.IsNullOrEmpty(workingDirectory))
-                {
-                    process.StartInfo.WorkingDirectory = workingDirectory;
+                    FileName = fileName,
+                    Arguments = args,
+                    WorkingDirectory = workingDirectory,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
                 }
-                return await RunProcessAsync(process).ConfigureAwait(false);
+            };
+            if (!process.Start()) throw new InvalidOperationException($"Could not start process: {process}");
+            return process;
+        }
+
+        public static Task<StringBuilder> GetOutputDataAsync(this Process process)
+        {
+            if (process == null) throw new ArgumentNullException(nameof(process));
+            if (process.HasExited) return Task.FromResult(new StringBuilder());
+
+            var ret = new StringBuilder();
+            var tcs = new TaskCompletionSource<StringBuilder>();
+
+            process.EnableRaisingEvents = true;
+            process.Exited += OnProcessExited;
+            process.OutputDataReceived += (sender, args) => ret.AppendLine(args.Data?.Trim('\b', ' '));
+
+            process.BeginOutputReadLine();
+
+            return tcs.Task;
+
+            void OnProcessExited(object sender, EventArgs e)
+            {
+                process.Exited -= OnProcessExited;
+                tcs.SetResult(ret);
             }
         }
 
-        private static Task<StringBuilder> RunProcessAsync(Process process)
+        public static Task<StringBuilder> GetErrotDataAsync(this Process process)
         {
-            var tcs = new TaskCompletionSource<StringBuilder>();
+            if (process == null) throw new ArgumentNullException(nameof(process));
+            if (process.HasExited) return Task.FromResult(new StringBuilder());
+
             var ret = new StringBuilder();
-            process.Exited += (sender, args) => tcs.SetResult(ret);
-            process.OutputDataReceived += (sender, args) => ret.AppendLine(args.Data?.Trim('\b', ' '));
-            //process.ErrorDataReceived += (s, ea) => Debug.WriteLine("ERR: " + ea.Data);
+            var tcs = new TaskCompletionSource<StringBuilder>();
 
-            if (!process.Start())
-            {
-                throw new InvalidOperationException("Could not start process: " + process);
-            }
+            process.EnableRaisingEvents = true;
+            process.Exited += OnProcessExited;
+            process.ErrorDataReceived += (sender, args) => ret.AppendLine(args.Data?.Trim('\b', ' '));
 
-            process.BeginOutputReadLine();
             process.BeginErrorReadLine();
 
             return tcs.Task;
+
+            void OnProcessExited(object sender, EventArgs e)
+            {
+                process.Exited -= OnProcessExited;
+                tcs.SetResult(ret);
+            }
+        }
+
+        public static Task<int> WaitForExitAsync(this Process process)
+        {
+            if (process == null) throw new ArgumentNullException(nameof(process));
+            if (process.HasExited) return Task.FromResult(0);
+
+            var tcs = new TaskCompletionSource<int>();
+
+            process.EnableRaisingEvents = true;
+            process.Exited += OnProcessExited;
+
+            return tcs.Task;
+
+            void OnProcessExited(object sender, EventArgs e)
+            {
+                process.Exited -= OnProcessExited;
+                tcs.SetResult(process.ExitCode);
+            }
         }
 
         /// <summary>

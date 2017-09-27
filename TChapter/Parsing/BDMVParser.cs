@@ -82,10 +82,14 @@ namespace TChapter.Parsing
 
             var workingPath = Directory.GetParent(location).FullName;
             location = location.Substring(location.LastIndexOf('\\') + 1);
-            var text = (await ProcessUtil.RunProcessAsync(_eac3toPath, $"\"{location}\"", workingPath)).ToString();
+            string text;
+            using (var process = ProcessUtil.StartProcess(_eac3toPath, location.WrapWithQuotes(), workingPath))
+            {
+                text = (await process.GetOutputDataAsync()).ToString();
+            }
             if (text.Contains("HD DVD / Blu-Ray disc structure not found."))
             {
-                //Logger.Log(text);
+                Logger.Log(text);
                 throw new Exception("May be the path is too complex or directory contains nonAscii characters");
             }
             Logger.Log("\r\nDisc Info:\r\n" + text);
