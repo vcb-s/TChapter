@@ -35,7 +35,7 @@ namespace TChapter.Chapters
         public double FramesPerSecond { get; set; }
         public TimeSpan Duration      { get; set; }
         public List<Chapter> Chapters { get; set; } = new List<Chapter>();
-        public Expression Expr { get; set; } = Expression.Empty;
+        public Expression Expr        { get; set; } = Expression.Empty;
 
         public override string ToString() => $"{Title} - {Duration.Time2String()} - [{Chapters.Count} Chapters]";
 
