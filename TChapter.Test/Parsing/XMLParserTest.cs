@@ -31,7 +31,7 @@ namespace TChapter.Test.Parsing
         public void TestParseXML_1()
         {
             IChapterParser parser = new XMLParser();
-            var data = parser.Parse(@"..\..\..\Assert\XML\ordered_chapter.xml");
+            var data = parser.Parse(@"..\..\..\Assets\XML\ordered_chapter.xml");
             Console.WriteLine(data);
             foreach (var chapter in (data as MultiChapterData))
             {
@@ -47,7 +47,7 @@ namespace TChapter.Test.Parsing
         public void TestParseXML_2()
         {
             IChapterParser parser = new XMLParser();
-            var data = parser.Parse(@"..\..\..\Assert\XML\sub_chapter.xml");
+            var data = parser.Parse(@"..\..\..\Assets\XML\sub_chapter.xml");
             Console.WriteLine(data);
             foreach (var chapter in data)
             {

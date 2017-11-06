@@ -31,7 +31,7 @@ namespace TChapter.Test.Parsing
         public void TestParseBDMV()
         {
             IChapterParser parser = new BDMVParser(@"C:\Tool\MeGUI\tools\eac3to\eac3to.exe");
-            var data = parser.Parse(@"..\..\..\Assert\BDMV\DISC1");
+            var data = parser.Parse(@"..\..\..\Assets\BDMV\DISC1");
             Console.WriteLine(data);
             foreach (var chapter in data)
             {

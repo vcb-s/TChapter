@@ -31,7 +31,7 @@ namespace TChapter.Test.Parsing
         public void TestParseMP4_nero()
         {
             IChapterParser parser = new MP4Parser();
-            var data = parser.Parse(@"..\..\..\Assert\MP4\nero.mp4");
+            var data = parser.Parse(@"..\..\..\Assets\MP4\nero.mp4");
             Console.WriteLine(data);
             foreach (var chapter in (data as SingleChapterData).Chapters)
             {

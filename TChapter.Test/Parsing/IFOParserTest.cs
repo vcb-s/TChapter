@@ -31,7 +31,7 @@ namespace TChapter.Test.Parsing
         public void TestParseIFO()
         {
             IChapterParser parser = new IFOParser();
-            var data = parser.Parse(@"..\..\..\Assert\IFO\VTS_05_0.IFO");
+            var data = parser.Parse(@"..\..\..\Assets\IFO\VTS_05_0.IFO");
             Console.WriteLine(data);
             foreach (var chapter in data)
             {

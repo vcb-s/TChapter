@@ -31,7 +31,8 @@ namespace TChapter.Test.Parsing
         public void TestParseMPLS_HD()
         {
             IChapterParser parser = new MPLSParser();
-            var data = parser.Parse(@"..\..\..\Assert\MPLS\00001-HD.mpls");
+            //var data = parser.Parse(@"..\..\..\Assets\MPLS\00001-HD.mpls");
+            var data = parser.Parse("D:\\Code\\@ChapterTool\\Sample\\MPLS\\00001_konobi.mpls");
             Console.WriteLine(data);
             foreach (var chapter in data)
             {
@@ -47,7 +48,7 @@ namespace TChapter.Test.Parsing
         public void TestParseMPLS_UHD()
         {
             IChapterParser parser = new MPLSParser();
-            var data = parser.Parse(@"..\..\..\Assert\MPLS\00001-UHD.mpls");
+            var data = parser.Parse(@"..\..\..\Assets\MPLS\00001-UHD.mpls");
             Console.WriteLine(data);
             foreach (var chapter in data)
             {
