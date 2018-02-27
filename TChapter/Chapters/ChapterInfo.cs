@@ -32,28 +32,29 @@ namespace TChapter.Chapters
         /// Corresponding Video file
         /// </summary>
         public string SourceName      { get; set; }
-        public double FramesPerSecond { get; set; }
+        public decimal FramesPerSecond { get; set; }
         public TimeSpan Duration      { get; set; }
         public List<Chapter> Chapters { get; set; } = new List<Chapter>();
         public Expression Expr        { get; set; } = Expression.Empty;
 
         public override string ToString() => $"{Title} - {Duration.Time2String()} - [{Chapters.Count} Chapters]";
 
-        public void ChangeFps(double fps)
+        public void ChangeFps(decimal fps)
         {
             for (var i = 0; i < Chapters.Count; i++)
             {
                 var c = Chapters[i];
-                var frames = c.Time.TotalSeconds*FramesPerSecond;
+                var frames = (decimal)c.Time.TotalSeconds * FramesPerSecond;
                 Chapters[i] = new Chapter
                 {
                     Name = c.Name,
-                    Time = new TimeSpan((long) Math.Round(frames/fps*TimeSpan.TicksPerSecond))
+                    Time = new TimeSpan((long)Math.Round(frames / fps * TimeSpan.TicksPerSecond))
                 };
             }
-            var totalFrames = Duration.TotalSeconds*FramesPerSecond;
-            Duration           = new TimeSpan((long) Math.Round(totalFrames/fps*TimeSpan.TicksPerSecond));
-            FramesPerSecond    = fps;
+
+            var totalFrames = (decimal)Duration.TotalSeconds * FramesPerSecond;
+            Duration = new TimeSpan((long)Math.Round(totalFrames / fps * TimeSpan.TicksPerSecond));
+            FramesPerSecond = fps;
         }
 
         #region updataInfo

@@ -67,9 +67,9 @@ namespace TChapter.Parsing
                 pgc.Title = pgc.SourceName = $"{fileName.Substring(0, barIndex)}_{titleSetNum}";
             }
 
-            pgc.Chapters = GetChapters(location, titleSetNum, out TimeSpan duration, out double fps);
+            pgc.Chapters = GetChapters(location, titleSetNum, out var duration, out var isNTSC);
             pgc.Duration = duration;
-            pgc.FramesPerSecond = fps;
+            pgc.FramesPerSecond = isNTSC ? 30000M / 1001 : 25;
 
             if (pgc.Duration.TotalSeconds < 10)
                 pgc = null;
@@ -77,22 +77,21 @@ namespace TChapter.Parsing
             return pgc;
         }
 
-        private static List<Chapter> GetChapters(string ifoFile, int programChain, out TimeSpan duration, out double fps)
+        private static List<Chapter> GetChapters(string ifoFile, int programChain, out IfoTimeSpan duration, out bool isNTSC)
         {
             var chapters = new List<Chapter>();
-            duration = TimeSpan.Zero;
-            fps = 0;
+            duration = IfoTimeSpan.Zero;
+            isNTSC = false;
 
             var stream = new FileStream(ifoFile, FileMode.Open, FileAccess.Read, FileShare.Read);
 
             var pcgItPosition = stream.GetPCGIP_Position();
             var programChainPrograms = -1;
             var programTime = TimeSpan.Zero;
-            double fpsLocal;
             if (programChain >= 0)
             {
                 var chainOffset = stream.GetChainOffset(pcgItPosition, programChain);
-                programTime = stream.ReadTimeSpan(pcgItPosition, chainOffset, out fpsLocal) ?? TimeSpan.Zero;
+                //programTime = stream.ReadTimeSpan(pcgItPosition, chainOffset, out fpsLocal) ?? TimeSpan.Zero;
                 programChainPrograms = stream.GetNumberOfPrograms(pcgItPosition, chainOffset);
             }
             else
@@ -101,7 +100,7 @@ namespace TChapter.Parsing
                 for (var curChain = 1; curChain <= programChains; curChain++)
                 {
                     var chainOffset = stream.GetChainOffset(pcgItPosition, curChain);
-                    var time = stream.ReadTimeSpan(pcgItPosition, chainOffset, out fpsLocal);
+                    var time = stream.ReadTimeSpan(pcgItPosition, chainOffset, out _);
                     if (time == null) break;
 
                     if (time.Value <= programTime) continue;
@@ -124,7 +123,7 @@ namespace TChapter.Parsing
                 if (currentProgram < (programChainPrograms - 1))
                     exitCell = stream.GetFileBlock(((pcgItPosition + longestChainOffset) + programMapOffset) + (currentProgram + 1), 1)[0] - 1;
 
-                var totalTime = TimeSpan.Zero;
+                var totalTime = IfoTimeSpan.Zero;
                 for (var currentCell = entryCell; currentCell <= exitCell; currentCell++)
                 {
                     var cellStart = cellTableOffset + ((currentCell - 1) * 0x18);
@@ -133,7 +132,7 @@ namespace TChapter.Parsing
                     if (cellType == 0x00 || cellType == 0x01)
                     {
                         bytes = stream.GetFileBlock(((pcgItPosition + longestChainOffset) + cellStart) + 4, 4);
-                        var time = IFOParserUtil.ReadTimeSpan(bytes, out fps) ?? TimeSpan.Zero;
+                        var time = IFOParserUtil.ReadTimeSpan(bytes, out isNTSC) ?? IfoTimeSpan.Zero;
                         totalTime += time;
                     }
                 }
