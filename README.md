@@ -44,10 +44,10 @@ The chapter type such as MPLS may include separated chapters, you can combine th
 -----
 ### Saving
 
-The save method has not been implemented in IChapterData, so you may access the method as follow
+You should call the saving method like below, refer to code document for more infomation.
 
 ```C#
-(data as MultiChapterData).Save(ChapterTypeEnum.XML, "path/to.save.xml");
+data.Save(ChapterTypeEnum.XML, "path/to/save/chapter.xml");
 ```
 
 -----
