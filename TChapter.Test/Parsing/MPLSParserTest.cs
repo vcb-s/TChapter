@@ -32,7 +32,7 @@ namespace TChapter.Test.Parsing
         {
             IChapterParser parser = new MPLSParser();
             //var data = parser.Parse(@"..\..\..\Assets\MPLS\00001-HD.mpls");
-            var data = parser.Parse("D:\\Code\\@ChapterTool\\Sample\\MPLS\\00001_konobi.mpls");
+            var data = parser.Parse(@"..\..\..\Assets\MPLS\00001-HD.mpls");
             Console.WriteLine(data);
             foreach (var chapter in data)
             {
