@@ -61,10 +61,10 @@ namespace TChapter.Parsing
             var info = new ChapterInfo();
             var lines = text.Trim(' ', '\t', '\r', '\n').Split('\n');
             var state = LineState.LTimeCode;
-            TimeSpan timeCode = TimeSpan.Zero, initalTime;
+            TimeSpan timeCode = TimeSpan.Zero, initialTime;
             if (RTimeCodeLine.Match(lines.First()).Success)
             {
-                initalTime = Config.TIME_FORMAT.Match(lines.First()).Value.ToTimeSpan();
+                initialTime = Config.TIME_FORMAT.Match(lines.First()).Value.ToTimeSpan();
             }
             else
             {
@@ -78,7 +78,7 @@ namespace TChapter.Parsing
                         if (string.IsNullOrWhiteSpace(line)) break; //跳过空行
                         if (RTimeCodeLine.Match(line).Success)
                         {
-                            timeCode = Config.TIME_FORMAT.Match(line).Value.ToTimeSpan() - initalTime;
+                            timeCode = Config.TIME_FORMAT.Match(line).Value.ToTimeSpan() - initialTime;
                             state = LineState.LName;
                             break;
                         }
@@ -96,7 +96,7 @@ namespace TChapter.Parsing
                         state = LineState.LError;   //未获得预期的名称信息，中断解析
                         break;
                     case LineState.LError:
-                        if (info.Chapters.Count == 0) throw new Exception("Unable to Prase this ogm file");
+                        if (info.Chapters.Count == 0) throw new Exception("Unable to Parse this ogm file");
                         Logger.Log($"+Interrupt: Happened at [{line}]");    //将已解析的部分返回
                         state = LineState.LFin;
                         break;

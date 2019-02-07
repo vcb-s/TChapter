@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 using FluentAssertions;
-using TChapter.Objcet;
+using TChapter.Object;
 
 namespace TChapter.Test.Object
 {

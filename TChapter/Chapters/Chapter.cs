@@ -18,7 +18,7 @@
 // ****************************************************************************
 
 using System;
-using TChapter.Objcet;
+using TChapter.Object;
 using TChapter.Util;
 
 namespace TChapter.Chapters
@@ -31,8 +31,8 @@ namespace TChapter.Chapters
         public TimeSpan Time    { get; set; }
         /// <summary>Chapter Name</summary>
         public string Name      { get; set; }
-        /// <summary>Fram Count</summary>
-        public string FramsInfo { get; set; } = string.Empty;
+        /// <summary>Frame Count</summary>
+        public string FramesInfo { get; set; } = string.Empty;
         public override string ToString() => $"{Name} - {Time.Time2String()}";
 
         public Chapter() { }
@@ -46,10 +46,10 @@ namespace TChapter.Chapters
 
         public int IsAccuracy(decimal fps, decimal accuracy, Expression expr = null)
         {
-            var frams = (decimal) Time.TotalMilliseconds * fps / 1000M;
-            if (expr != null) frams = expr.Eval(Time.TotalSeconds) * fps;
-            var rounded = Math.Round(frams, MidpointRounding.AwayFromZero);
-            return Math.Abs(frams - rounded) < accuracy ? 1 : 0;
+            var frames = (decimal) Time.TotalMilliseconds * fps / 1000M;
+            if (expr != null) frames = expr.Eval(Time.TotalSeconds) * fps;
+            var rounded = Math.Round(frames, MidpointRounding.AwayFromZero);
+            return Math.Abs(frames - rounded) < accuracy ? 1 : 0;
         }
     }
 }

@@ -17,11 +17,12 @@
 //
 // ****************************************************************************
 
+// ReSharper disable InconsistentNaming
 namespace TChapter.Chapters
 {
     public enum ChapterTypeEnum
     {
-        UNKNOW, BDMV, CUE, FLAC, IFO, MATROSKA, MPLS, MP4, OGM, VTT, XML, XPL,
+        UNKNOWN, BDMV, CUE, FLAC, IFO, MATROSKA, MPLS, MP4, OGM, VTT, XML, XPL,
         QPF, TIMECODES, JSON
     }
 }

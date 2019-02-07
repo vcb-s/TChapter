@@ -22,7 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using TChapter.Chapters;
-using TChapter.Objcet;
+using TChapter.Object;
 
 namespace TChapter.Util
 {

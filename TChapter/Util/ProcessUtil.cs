@@ -71,7 +71,7 @@ namespace TChapter.Util
             }
         }
 
-        public static Task<StringBuilder> GetErrotDataAsync(this Process process)
+        public static Task<StringBuilder> GetErrorDataAsync(this Process process)
         {
             if (process == null) throw new ArgumentNullException(nameof(process));
             if (process.HasExited) return Task.FromResult(new StringBuilder());
@@ -121,8 +121,8 @@ namespace TChapter.Util
         public static DataReceivedEventArgs GetDataReceivedEventArgs(object argData)
         {
             var eventArgs = (DataReceivedEventArgs)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(DataReceivedEventArgs));
-            var fileds = typeof(DataReceivedEventArgs).GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)[0];
-            fileds.SetValue(eventArgs, argData);
+            var fields = typeof(DataReceivedEventArgs).GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)[0];
+            fields.SetValue(eventArgs, argData);
 
             return eventArgs;
         }

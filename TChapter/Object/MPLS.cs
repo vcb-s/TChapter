@@ -23,7 +23,7 @@ using System.IO;
 using System.Text;
 using TChapter.Util;
 
-namespace TChapter.Objcet
+namespace TChapter.Object
 {
     //https://github.com/lerks/BluRay/wiki/MPLS
     public class MPLS
@@ -550,7 +550,7 @@ namespace TChapter.Objcet
                     RefToSubClipID = (byte) stream.ReadByte();
                     break;
                 default:
-                    Console.WriteLine($"Unknow StreamType type: {StreamType:X}");
+                    Console.WriteLine($"Unknown StreamType type: {StreamType:X}");
                     break;
             }
             RefToStreamPID = (ushort) stream.BEInt16();
@@ -610,7 +610,7 @@ namespace TChapter.Objcet
                     LanguageCode = Encoding.ASCII.GetString(stream.ReadBytes(3));
                     break;
                 default:
-                    Console.WriteLine($"Unknow StreamCodingType type: {StreamCodingType:X}");
+                    Console.WriteLine($"Unknown StreamCodingType type: {StreamCodingType:X}");
                     break;
             }
             stream.Skip(Length - (stream.Position - position));
@@ -684,15 +684,15 @@ namespace TChapter.Objcet
     {
         public ushort ExtDataType;
         public ushort ExtDataVersion;
-        public uint ExtDataStartAddres;
+        public uint ExtDataStartAddress;
         public uint ExtDataLength;
 
         public ExtDataEntry(Stream stream)
         {
-            ExtDataType        = (ushort) stream.BEInt16();
-            ExtDataVersion     = (ushort) stream.BEInt16();
-            ExtDataStartAddres = stream.BEInt32();
-            ExtDataLength      = stream.BEInt32();
+            ExtDataType         = (ushort) stream.BEInt16();
+            ExtDataVersion      = (ushort) stream.BEInt16();
+            ExtDataStartAddress = stream.BEInt32();
+            ExtDataLength       = stream.BEInt32();
         }
     }
 

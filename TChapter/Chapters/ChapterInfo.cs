@@ -20,7 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TChapter.Objcet;
+using TChapter.Object;
 using TChapter.Util;
 
 namespace TChapter.Chapters
@@ -63,7 +63,7 @@ namespace TChapter.Chapters
         /// 以新的时间基准更新剩余章节
         /// </summary>
         /// <param name="shift">剩余章节的首个章节点的时间</param>
-        public void UpdataInfo(TimeSpan shift)
+        public void UpdateInfo(TimeSpan shift)
         {
             Chapters.ForEach(item => item.Time -= shift);
         }
@@ -72,7 +72,7 @@ namespace TChapter.Chapters
         /// 根据输入的数值向后位移章节序号
         /// </summary>
         /// <param name="shift">位移量</param>
-        public void UpdataInfo(int shift)
+        public void UpdateInfo(int shift)
         {
             var index = 0;
             Chapters.ForEach(item => item.Number = ++index + shift);
@@ -82,7 +82,7 @@ namespace TChapter.Chapters
         /// 根据给定的章节名模板更新章节
         /// </summary>
         /// <param name="chapterNameTemplate"></param>
-        public void UpdataInfo(string chapterNameTemplate)
+        public void UpdateInfo(string chapterNameTemplate)
         {
             if (string.IsNullOrWhiteSpace(chapterNameTemplate)) return;
             using (var cn = chapterNameTemplate.Trim(' ', '\r', '\n').Split('\n').ToList().GetEnumerator()) //移除首尾多余空行
