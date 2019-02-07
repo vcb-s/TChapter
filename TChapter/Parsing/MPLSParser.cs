@@ -21,7 +21,7 @@ using System;
 using System.IO;
 using System.Linq;
 using TChapter.Chapters;
-using TChapter.Objcet;
+using TChapter.Object;
 using TChapter.Util;
 
 namespace TChapter.Parsing
@@ -52,7 +52,7 @@ namespace TChapter.Parsing
                 {
                     SourceName = data.PlayItems[i].FullName,
                     Duration = PTS2Time(playItem.TimeInfo.DeltaTime),
-                    FramesPerSecond = (double)Config.FRAME_RATE[attr.StreamAttributes.FrameRate]
+                    FramesPerSecond = Config.FRAME_RATE[attr.StreamAttributes.FrameRate]
                 };
 
                 var index = i;

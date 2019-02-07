@@ -62,9 +62,9 @@
     <Compile Include="Config.cs" />
     <Compile Include="Util\ConvertUtil.cs" />
     <Compile Include="Util\ProcessUtil.cs" />
-    <Compile Include="Objcet\Expression.cs" />
-    <Compile Include="Objcet\FLAC.cs" />
-    <Compile Include="Objcet\MPLS.cs" />
+    <Compile Include="Object\Expression.cs" />
+    <Compile Include="Object\FLAC.cs" />
+    <Compile Include="Object\MPLS.cs" />
     <Compile Include="Parsing\BDMVParser.cs" />
     <Compile Include="Parsing\IFOParser.cs" />
     <Compile Include="Parsing\IFOParserUtil.cs" />

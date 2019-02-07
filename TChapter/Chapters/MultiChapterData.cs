@@ -41,20 +41,20 @@ namespace TChapter.Chapters
             }
         }
 
-        public void Save(ChapterTypeEnum chapterType, string savePath, int index = 0, bool removeName = false, string extraData = "")
+        public void Save(ChapterTypeEnum chapterType, string savePath, int index = 0, bool removeName = false, string language = "", string sourceFileName = "")
         {
             if (string.IsNullOrWhiteSpace(savePath))
                 throw new Exception("The output path is empty");
             switch (chapterType)
             {
                 case ChapterTypeEnum.CUE:
-                    this.ToCUE(extraData, index, removeName).SaveAs(savePath);
+                    this.ToCUE(sourceFileName, index, removeName).SaveAs(savePath);
                     break;
                 case ChapterTypeEnum.OGM:
                     this.ToOGM(index, removeName).SaveAs(savePath);
                     break;
                 case ChapterTypeEnum.XML:
-                    this.ToXML(extraData, index, removeName).SaveAs(savePath);
+                    this.ToXML(language, index, removeName).SaveAs(savePath);
                     break;
                 case ChapterTypeEnum.QPF:
                     this.ToQPFILE(index).SaveAs(savePath);

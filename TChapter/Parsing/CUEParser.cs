@@ -38,7 +38,7 @@ namespace TChapter.Parsing
 
         public IChapterData Parse(Stream stream)
         {
-            return PraseCue(new StreamReader(stream, true).ReadToEnd());
+            return ParseCue(new StreamReader(stream, true).ReadToEnd());
         }
 
         private enum NextState
@@ -61,7 +61,7 @@ namespace TChapter.Parsing
         /// </summary>
         /// <param name="context">未分行的cue字符串</param>
         /// <returns></returns>
-        private static SingleChapterData PraseCue(string context)
+        private static SingleChapterData ParseCue(string context)
         {
             var lines = context.Split('\n');
             var cue = new SingleChapterData(ChapterTypeEnum.CUE);
@@ -145,7 +145,7 @@ namespace TChapter.Parsing
                         break;
 
                     case NextState.Error:
-                        throw new Exception("Unable to Prase this cue file");
+                        throw new Exception("Unable to Parse this cue file");
                     case NextState.Fin:
                         goto EXIT_1;
                     default:

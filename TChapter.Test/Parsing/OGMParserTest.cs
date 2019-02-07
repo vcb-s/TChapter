@@ -31,7 +31,7 @@ namespace TChapter.Test.Parsing
         public void TestParseOGM()
         {
             IChapterParser parser = new OGMParser();
-            var data = parser.Parse(@"..\..\..\Assert\OGM\00001.txt");
+            var data = parser.Parse(@"..\..\..\Assets\OGM\00001.txt");
             Console.WriteLine(data);
             foreach (var chapter in (data as SingleChapterData).Chapters)
             {

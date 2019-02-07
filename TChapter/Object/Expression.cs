@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace TChapter.Objcet
+namespace TChapter.Object
 {
     public class Expression
     {
@@ -332,7 +332,7 @@ namespace TChapter.Objcet
                         stack.Push(token);
                         break;
                     default:
-                        throw new Exception($"Unexcept token type: {token.Value} => {token.TokenType}");
+                        throw new Exception($"Unexpected token type: {token.Value} => {token.TokenType}");
                     }
                     preToken = token;
                     break;
@@ -351,10 +351,10 @@ namespace TChapter.Objcet
             return retStack;
         }
 
-        public static decimal Eval(IEnumerable<Token> posfix, Dictionary<string, decimal> values)
+        public static decimal Eval(IEnumerable<Token> postfix, Dictionary<string, decimal> values)
         {
             var stack = new Stack<Token>();
-            foreach (var token in posfix.Reverse())
+            foreach (var token in postfix.Reverse())
             {
                 switch (token.TokenType)
                 {

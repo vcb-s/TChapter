@@ -26,5 +26,8 @@ namespace TChapter.Chapters
         ChapterTypeEnum ChapterType { get; }
 
         object Source { get; }
+
+        void Save(ChapterTypeEnum chapterType, string savePath, int index = 0, bool removeName = false,
+            string language = "", string sourceFileName = "");
     }
 }

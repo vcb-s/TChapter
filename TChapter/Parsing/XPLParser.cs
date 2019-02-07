@@ -53,7 +53,7 @@ namespace TChapter.Parsing
                     var pgc = new ChapterInfo
                     {
                         SourceName = title.Element(ns + "PrimaryAudioVideoClip")?.Attribute("src")?.Value ?? "",
-                        FramesPerSecond = 24D,
+                        FramesPerSecond = 24M,
                         Chapters = new List<Chapter>()
                     };
                     var tickBaseDivisor = (int?)title.Attribute("tickBaseDivisor") ?? 1; //optional
@@ -91,7 +91,7 @@ namespace TChapter.Parsing
         }
 
         /// <summary>
-        /// Constructs a TimeSpan from a string formated as "HH:MM:SS:TT"
+        /// Constructs a TimeSpan from a string formatted as "HH:MM:SS:TT"
         /// </summary>
         /// <param name="timeSpan"></param>
         /// <param name="timeBase"></param>

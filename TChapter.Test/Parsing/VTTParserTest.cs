@@ -31,7 +31,7 @@ namespace TChapter.Test.Parsing
         public void TestParseVTT()
         {
             IChapterParser parser = new VTTParser();
-            var data = parser.Parse(@"..\..\..\Assert\VTT\00001.vtt");
+            var data = parser.Parse(@"..\..\..\Assets\VTT\00001.vtt");
             Console.WriteLine(data);
             foreach (var chapter in (data as SingleChapterData).Chapters)
             {

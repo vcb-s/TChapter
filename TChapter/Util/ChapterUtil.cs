@@ -22,7 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using TChapter.Chapters;
-using TChapter.Objcet;
+using TChapter.Object;
 
 namespace TChapter.Util
 {
@@ -33,8 +33,12 @@ namespace TChapter.Util
         /// </summary>
         /// <param name="time"></param>
         /// <returns></returns>
-        public static string Time2String(this TimeSpan time) =>
-            $"{time.Hours:D2}:{time.Minutes:D2}:{time.Seconds:D2}.{time.Milliseconds:D3}";
+        public static string Time2String(this TimeSpan time)
+        {
+            var millisecond = (int) Math.Round((time.TotalSeconds - Math.Floor(time.TotalSeconds)) * 1000);
+            return $"{time.Hours:D2}:{time.Minutes:D2}:{time.Seconds:D2}.{millisecond:D3}";
+        }
+
 
         /// <summary>
         /// 将给定的章节点时间以平移、修正信息修正后转换为 hh:mm:ss.sss 形式的字符串

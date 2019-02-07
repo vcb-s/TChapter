@@ -31,7 +31,7 @@ namespace TChapter.Test.Parsing
         public void TestParseCUE()
         {
             IChapterParser parser = new CUEParser();
-            var data = parser.Parse(@"..\..\..\Assert\CUE\example-cue-sheet.cue");
+            var data = parser.Parse(@"..\..\..\Assets\CUE\example-cue-sheet.cue");
             Console.WriteLine(data);
             foreach (var chapter in (data as SingleChapterData).Chapters)
             {
@@ -43,7 +43,7 @@ namespace TChapter.Test.Parsing
         public void TestParseFLAC()
         {
             IChapterParser parser = new FLACParser();
-            var data = parser.Parse(@"..\..\..\Assert\CUE\example-cue-sheet.flac");
+            var data = parser.Parse(@"..\..\..\Assets\CUE\example-cue-sheet.flac");
             Console.WriteLine(data);
             foreach (var chapter in (data as SingleChapterData).Chapters)
             {
@@ -55,7 +55,7 @@ namespace TChapter.Test.Parsing
         public void TestParseTAK()
         {
             IChapterParser parser = new TAKParser();
-            var data = parser.Parse(@"..\..\..\Assert\CUE\example-cue-sheet.tak");
+            var data = parser.Parse(@"..\..\..\Assets\CUE\example-cue-sheet.tak");
             Console.WriteLine(data);
             foreach (var chapter in (data as SingleChapterData).Chapters)
             {

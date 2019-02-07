@@ -18,6 +18,7 @@
 // ****************************************************************************
 
 using System;
+using System.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TChapter.Chapters;
 using TChapter.Parsing;
@@ -30,16 +31,24 @@ namespace TChapter.Test.Parsing
         [TestMethod]
         public void TestParseBDMV()
         {
-            IChapterParser parser = new BDMVParser(@"C:\Tool\MeGUI\tools\eac3to\eac3to.exe");
-            var data = parser.Parse(@"..\..\..\Assert\BDMV\DISC1");
-            Console.WriteLine(data);
-            foreach (var chapter in data)
+            IChapterParser parser = new BDMVParser(@"eac3to.exe");
+            try
             {
-                foreach (var item in chapter.Chapters)
+                var data = parser.Parse(@"..\..\..\Assets\BDMV\DISC1");
+                Console.WriteLine(data);
+                foreach (var chapter in data)
                 {
-                    Console.WriteLine(item);
+                    foreach (var item in chapter.Chapters)
+                    {
+                        Console.WriteLine(item);
+                    }
+                    Console.WriteLine();
                 }
-                Console.WriteLine();
+            }
+            catch (Win32Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
     }

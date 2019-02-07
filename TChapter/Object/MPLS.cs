@@ -23,20 +23,20 @@ using System.IO;
 using System.Text;
 using TChapter.Util;
 
-namespace TChapter.Objcet
+namespace TChapter.Object
 {
     //https://github.com/lerks/BluRay/wiki/MPLS
     public class MPLS
     {
-        private readonly MplsHeader _mplsHeader;
-        private readonly PlayList _playList;
-        private readonly PlayListMark _playListMark;
+        private readonly MplsHeader    _mplsHeader;
+        private readonly PlayList      _playList;
+        private readonly PlayListMark  _playListMark;
         private readonly ExtensionData _extensionData;
 
-        public string Version => _mplsHeader.TypeIndicator.ToString();
+        public string Version       => _mplsHeader.TypeIndicator.ToString();
         public PlayItem[] PlayItems => _playList.PlayItems;
-        public SubPath[] SubPaths => _playList.SubPaths;
-        public Mark[] Marks => _playListMark.Marks;
+        public SubPath[] SubPaths   => _playList.SubPaths;
+        public Mark[] Marks         => _playListMark.Marks;
 
         public MPLS(Stream stream)
         {
@@ -90,8 +90,8 @@ namespace TChapter.Objcet
                 TypeIndicator.Version != "0200" &&
                 TypeIndicator.Version != "0300")
                 throw new Exception($"Invalid mpls version: {TypeIndicator.Version}");
-            PlayListStartAddress = stream.BEInt32();
-            PlayListMarkStartAddress = stream.BEInt32();
+            PlayListStartAddress      = stream.BEInt32();
+            PlayListMarkStartAddress  = stream.BEInt32();
             ExtensionDataStartAddress = stream.BEInt32();
             stream.Skip(20);
             AppInfoPlayList = new AppInfoPlayList(stream);
@@ -108,8 +108,8 @@ namespace TChapter.Objcet
         public UOMaskTable UOMaskTable;
 
         public ushort FlagField { private get; set; }
-        public bool RandomAccessFlag => ((FlagField >> 15) & 1) == 1;
-        public bool AudioMixFlag => ((FlagField >> 14) & 1) == 1;
+        public bool RandomAccessFlag   => ((FlagField >> 15) & 1) == 1;
+        public bool AudioMixFlag       => ((FlagField >> 14) & 1) == 1;
         public bool LosslessBypassFlag => ((FlagField >> 13) & 1) == 1;
 
         public AppInfoPlayList(Stream stream)
@@ -117,10 +117,17 @@ namespace TChapter.Objcet
             Length = stream.BEInt32();
             var position = stream.Position;
             stream.Skip(1);
-            PlaybackType = (byte)stream.ReadByte();
-            PlaybackCount = (ushort)stream.BEInt16();
-            UOMaskTable = new UOMaskTable(stream);
-            FlagField = (ushort)stream.BEInt16();
+            PlaybackType = (byte) stream.ReadByte();
+            if (PlaybackType == 0x02 || PlaybackType == 0x03)
+            {
+                PlaybackCount = (ushort) stream.BEInt16();
+            }
+            else
+            {
+                stream.Skip(2);
+                UOMaskTable = new UOMaskTable(stream);
+                FlagField   = (ushort) stream.BEInt16();
+            }
             stream.Skip(Length - (stream.Position - position));
         }
     }
@@ -160,50 +167,50 @@ namespace TChapter.Objcet
 
         public UOMaskTable(Stream stream)
         {
-            var flagField = stream.ReadBytes(8);
-            var br = new BitReader(flagField);
-            MenuCall = br.GetBit();
-            TitleSearch = br.GetBit();
-            ChapterSearch = br.GetBit();
-            TimeSearch = br.GetBit();
+            var br = new BitReader(stream.ReadBytes(8));
+
+            MenuCall        = br.GetBit();
+            TitleSearch     = br.GetBit();
+            ChapterSearch   = br.GetBit();
+            TimeSearch      = br.GetBit();
             SkipToNextPoint = br.GetBit();
             SkipToPrevPoint = br.GetBit();
 
             br.Skip(1);
 
-            Stop = br.GetBit();
-            PauseOn = br.GetBit();
+            Stop            = br.GetBit();
+            PauseOn         = br.GetBit();
 
             br.Skip(1);
 
-            StillOff = br.GetBit();
-            ForwardPlay = br.GetBit();
-            BackwardPlay = br.GetBit();
-            Resume = br.GetBit();
-            MoveUpSelectedButton = br.GetBit();
-            MoveDownSelectedButton = br.GetBit();
-            MoveLeftSelectedButton = br.GetBit();
-            MoveRightSelectedButton = br.GetBit();
-            SelectButton = br.GetBit();
-            ActivateButton = br.GetBit();
-            SelectAndActivateButton = br.GetBit();
-            PrimaryAudioStreamNumberChange = br.GetBit();
+            StillOff                         = br.GetBit();
+            ForwardPlay                      = br.GetBit();
+            BackwardPlay                     = br.GetBit();
+            Resume                           = br.GetBit();
+            MoveUpSelectedButton             = br.GetBit();
+            MoveDownSelectedButton           = br.GetBit();
+            MoveLeftSelectedButton           = br.GetBit();
+            MoveRightSelectedButton          = br.GetBit();
+            SelectButton                     = br.GetBit();
+            ActivateButton                   = br.GetBit();
+            SelectAndActivateButton          = br.GetBit();
+            PrimaryAudioStreamNumberChange   = br.GetBit();
 
             br.Skip(1);
 
-            AngleNumberChange = br.GetBit();
-            PopupOn = br.GetBit();
-            PopupOff = br.GetBit();
-            PGEnableDisable = br.GetBit();
-            PGStreamNumberChange = br.GetBit();
-            SecondaryVideoEnableDisable = br.GetBit();
+            AngleNumberChange                = br.GetBit();
+            PopupOn                          = br.GetBit();
+            PopupOff                         = br.GetBit();
+            PGEnableDisable                  = br.GetBit();
+            PGStreamNumberChange             = br.GetBit();
+            SecondaryVideoEnableDisable      = br.GetBit();
             SecondaryVideoStreamNumberChange = br.GetBit();
-            SecondaryAudioEnableDisable = br.GetBit();
+            SecondaryAudioEnableDisable      = br.GetBit();
             SecondaryAudioStreamNumberChange = br.GetBit();
 
             br.Skip(1);
 
-            SecondaryPGStreamNumberChange = br.GetBit();
+            SecondaryPGStreamNumberChange    = br.GetBit();
 
             br.Skip(30);
         }
@@ -223,18 +230,12 @@ namespace TChapter.Objcet
             Length = stream.BEInt32();
             var position = stream.Position;
             stream.Skip(2);
-            NumberOfPlayItems = (ushort)stream.BEInt16();
-            NumberOfSubPaths = (ushort)stream.BEInt16();
+            NumberOfPlayItems = (ushort) stream.BEInt16();
+            NumberOfSubPaths  = (ushort) stream.BEInt16();
             PlayItems = new PlayItem[NumberOfPlayItems];
-            SubPaths = new SubPath[NumberOfSubPaths];
-            for (var i = 0; i < NumberOfPlayItems; ++i)
-            {
-                PlayItems[i] = new PlayItem(stream);
-            }
-            for (var i = 0; i < NumberOfSubPaths; ++i)
-            {
-                SubPaths[i] = new SubPath(stream);
-            }
+            SubPaths  = new SubPath[NumberOfSubPaths];
+            for (var i = 0; i < NumberOfPlayItems; ++i) PlayItems[i] = new PlayItem(stream);
+            for (var i = 0; i < NumberOfSubPaths ; ++i) SubPaths[i]  = new SubPath(stream);
             stream.Skip(Length - (stream.Position - position));
         }
 
@@ -252,7 +253,7 @@ namespace TChapter.Objcet
         public ClipName(Stream stream)
         {
             ClipInformationFileName = Encoding.ASCII.GetString(stream.ReadBytes(5));
-            ClipCodecIdentifier = Encoding.ASCII.GetString(stream.ReadBytes(4));
+            ClipCodecIdentifier     = Encoding.ASCII.GetString(stream.ReadBytes(4));
         }
 
         public override string ToString()
@@ -268,8 +269,8 @@ namespace TChapter.Objcet
 
         public ClipNameWithRef(Stream stream)
         {
-            ClipName = new ClipName(stream);
-            RefToSTCID = (byte)stream.ReadByte();
+            ClipName   = new ClipName(stream);
+            RefToSTCID = (byte) stream.ReadByte();
         }
     }
 
@@ -282,7 +283,7 @@ namespace TChapter.Objcet
 
         public TimeInfo(Stream stream)
         {
-            INTime = stream.BEInt32();
+            INTime  = stream.BEInt32();
             OUTTime = stream.BEInt32();
         }
     }
@@ -308,16 +309,16 @@ namespace TChapter.Objcet
 
         public PlayItem(Stream stream)
         {
-            Length = (ushort)stream.BEInt16();
+            Length       = (ushort) stream.BEInt16();
             var position = stream.Position;
-            ClipName = new ClipName(stream);
-            _flagField1 = (ushort)stream.BEInt16();
-            RefToSTCID = (byte)stream.ReadByte();
-            TimeInfo = new TimeInfo(stream);
-            UOMaskTable = new UOMaskTable(stream);
-            _flagField2 = (byte)stream.ReadByte();
-            StillMode = (byte)stream.ReadByte();
-            StillTime = (ushort)stream.BEInt16();
+            ClipName     = new ClipName(stream);
+            _flagField1  = (ushort) stream.BEInt16();
+            RefToSTCID   = (byte) stream.ReadByte();
+            TimeInfo     = new TimeInfo(stream);
+            UOMaskTable  = new UOMaskTable(stream);
+            _flagField2  = (byte) stream.ReadByte();
+            StillMode    = (byte) stream.ReadByte();
+            StillTime    = (ushort) stream.BEInt16();
             if (IsMultiAngle)
             {
                 MultiAngle = new MultiAngle(stream);
@@ -351,8 +352,8 @@ namespace TChapter.Objcet
 
         public MultiAngle(Stream stream)
         {
-            NumberOfAngles = (byte)stream.ReadByte();
-            _flagField = (byte)stream.ReadByte();
+            NumberOfAngles = (byte) stream.ReadByte();
+            _flagField = (byte) stream.ReadByte();
             Angles = new ClipNameWithRef[NumberOfAngles - 1];
             for (var i = 0; i < NumberOfAngles - 1; ++i)
             {
@@ -376,9 +377,9 @@ namespace TChapter.Objcet
             Length = stream.BEInt32();
             var position = stream.Position;
             stream.Skip(2);
-            SubPathType = (byte)stream.ReadByte();
-            _flagField = (ushort)stream.BEInt16();
-            NumberOfSubPlayItems = (byte)stream.ReadByte();
+            SubPathType = (byte) stream.ReadByte();
+            _flagField = (ushort) stream.BEInt16();
+            NumberOfSubPlayItems = (byte) stream.ReadByte();
             SubPlayItems = new SubPlayItem[NumberOfSubPlayItems];
             for (var i = 1; i < NumberOfSubPlayItems; ++i)
             {
@@ -396,7 +397,7 @@ namespace TChapter.Objcet
         //3bits reserved
         private readonly byte _flagField;
         private byte ConnectionCondition => (byte)(_flagField >> 1);
-        private bool IsMultiClipEntries => (_flagField & 1) == 1;
+        private bool IsMultiClipEntries  => (_flagField & 1) == 1;
         public byte RefToSTCID;
         public TimeInfo TimeInfo;
         public ushort SyncPlayItemID;
@@ -407,19 +408,19 @@ namespace TChapter.Objcet
 
         public SubPlayItem(Stream stream)
         {
-            Length = (ushort)stream.BEInt16();
+            Length = (ushort) stream.BEInt16();
             var position = stream.Position;
             ClipName = new ClipName(stream);
             stream.Skip(3);
-            _flagField = (byte)stream.ReadByte();
-            RefToSTCID = (byte)stream.ReadByte();
+            _flagField = (byte) stream.ReadByte();
+            RefToSTCID = (byte) stream.ReadByte();
             TimeInfo = new TimeInfo(stream);
-            SyncPlayItemID = (ushort)stream.BEInt16();
+            SyncPlayItemID = (ushort) stream.BEInt16();
             SyncStartPTS = stream.BEInt32();
 
             if (IsMultiClipEntries)
             {
-                NumberOfMultiClipEntries = (byte)stream.ReadByte();
+                NumberOfMultiClipEntries = (byte) stream.ReadByte();
                 MultiClipNameEntries = new ClipNameWithRef[NumberOfMultiClipEntries - 1];
                 for (var i = 0; i < NumberOfMultiClipEntries - 1; ++i)
                 {
@@ -446,16 +447,16 @@ namespace TChapter.Objcet
 
         public STNTable(Stream stream)
         {
-            Length = (ushort)stream.BEInt16();
+            Length = (ushort) stream.BEInt16();
             var position = stream.Position;
             stream.Skip(2);
-            NumberOfPrimaryVideoStreamEntries = (byte)stream.ReadByte();
-            NumberOfPrimaryAudioStreamEntries = (byte)stream.ReadByte();
-            NumberOfPrimaryPGStreamEntries = (byte)stream.ReadByte();
-            NumberOfPrimaryIGStreamEntries = (byte)stream.ReadByte();
-            NumberOfSecondaryAudioStreamEntries = (byte)stream.ReadByte();
-            NumberOfSecondaryVideoStreamEntries = (byte)stream.ReadByte();
-            NumberOfSecondaryPGStreamEntries = (byte)stream.ReadByte();
+            NumberOfPrimaryVideoStreamEntries   = (byte) stream.ReadByte();
+            NumberOfPrimaryAudioStreamEntries   = (byte) stream.ReadByte();
+            NumberOfPrimaryPGStreamEntries      = (byte) stream.ReadByte();
+            NumberOfPrimaryIGStreamEntries      = (byte) stream.ReadByte();
+            NumberOfSecondaryAudioStreamEntries = (byte) stream.ReadByte();
+            NumberOfSecondaryVideoStreamEntries = (byte) stream.ReadByte();
+            NumberOfSecondaryPGStreamEntries    = (byte) stream.ReadByte();
             stream.Skip(5);
 
             StreamEntries = new BasicStreamEntry[
@@ -467,11 +468,11 @@ namespace TChapter.Objcet
                 NumberOfSecondaryVideoStreamEntries +
                 NumberOfSecondaryPGStreamEntries];
             var index = 0;
-            for (var i = 0; i < NumberOfPrimaryVideoStreamEntries; ++i) StreamEntries[index++] = new PrimaryVideoStreamEntry(stream);
-            for (var i = 0; i < NumberOfPrimaryAudioStreamEntries; ++i) StreamEntries[index++] = new PrimaryAudioStreamEntry(stream);
-            for (var i = 0; i < NumberOfPrimaryPGStreamEntries; ++i) StreamEntries[index++] = new PrimaryPGStreamEntry(stream);
-            for (var i = 0; i < NumberOfSecondaryPGStreamEntries; ++i) StreamEntries[index++] = new SecondaryPGStreamEntry(stream);
-            for (var i = 0; i < NumberOfPrimaryIGStreamEntries; ++i) StreamEntries[index++] = new PrimaryIGStreamEntry(stream);
+            for (var i = 0; i < NumberOfPrimaryVideoStreamEntries  ; ++i) StreamEntries[index++] = new PrimaryVideoStreamEntry(stream);
+            for (var i = 0; i < NumberOfPrimaryAudioStreamEntries  ; ++i) StreamEntries[index++] = new PrimaryAudioStreamEntry(stream);
+            for (var i = 0; i < NumberOfPrimaryPGStreamEntries     ; ++i) StreamEntries[index++] = new PrimaryPGStreamEntry(stream);
+            for (var i = 0; i < NumberOfSecondaryPGStreamEntries   ; ++i) StreamEntries[index++] = new SecondaryPGStreamEntry(stream);
+            for (var i = 0; i < NumberOfPrimaryIGStreamEntries     ; ++i) StreamEntries[index++] = new PrimaryIGStreamEntry(stream);
             for (var i = 0; i < NumberOfSecondaryAudioStreamEntries; ++i) StreamEntries[index++] = new SecondaryAudioStreamEntry(stream);
             for (var i = 0; i < NumberOfSecondaryVideoStreamEntries; ++i) StreamEntries[index++] = new SecondaryVideoStreamEntry(stream);
             stream.Skip(Length - (stream.Position - position));
@@ -484,7 +485,7 @@ namespace TChapter.Objcet
         public StreamAttributes StreamAttributes;
         public BasicStreamEntry(Stream stream)
         {
-            StreamEntry = new StreamEntry(stream);
+            StreamEntry      = new StreamEntry(stream);
             StreamAttributes = new StreamAttributes(stream);
         }
     }
@@ -535,9 +536,9 @@ namespace TChapter.Objcet
 
         public StreamEntry(Stream stream)
         {
-            Length = (byte)stream.ReadByte();
+            Length = (byte) stream.ReadByte();
             var position = stream.Position;
-            StreamType = (byte)stream.ReadByte();
+            StreamType = (byte) stream.ReadByte();
             switch (StreamType)
             {
                 case 0x01:
@@ -545,14 +546,14 @@ namespace TChapter.Objcet
                     break;
                 case 0x02:
                 case 0x04:
-                    RefToSubPathID = (byte)stream.ReadByte();
-                    RefToSubClipID = (byte)stream.ReadByte();
+                    RefToSubPathID = (byte) stream.ReadByte();
+                    RefToSubClipID = (byte) stream.ReadByte();
                     break;
                 default:
-                    Console.WriteLine($"Unknow StreamType type: {StreamType:X}");
+                    Console.WriteLine($"Unknown StreamType type: {StreamType:X}");
                     break;
             }
-            RefToStreamPID = (ushort)stream.BEInt16();
+            RefToStreamPID = (ushort) stream.BEInt16();
             stream.Skip(Length - (stream.Position - position));
         }
     }
@@ -563,26 +564,27 @@ namespace TChapter.Objcet
         public byte StreamCodingType;
         private readonly byte _videoInfo;
         public byte VideoFormat => (byte)(_videoInfo >> 4);
-        public byte FrameRate => (byte)(_videoInfo & 0xf);
+        public byte FrameRate =>   (byte)(_videoInfo & 0xf);
         private readonly byte _audioInfo;
         public byte AudioFormat => (byte)(_audioInfo >> 4);
-        public byte SampleRate => (byte)(_audioInfo & 0xf);
+        public byte SampleRate =>  (byte)(_audioInfo & 0xf);
         public byte CharacterCode;
         public string LanguageCode;//3
 
         public StreamAttributes(Stream stream)
         {
-            Length = (byte)stream.ReadByte();
+            Length = (byte) stream.ReadByte();
             var position = stream.Position;
-            StreamCodingType = (byte)stream.ReadByte();
+            StreamCodingType = (byte) stream.ReadByte();
             switch (StreamCodingType)
             {
                 case 0x01:
                 case 0x02:
                 case 0x1B:
                 case 0xEA:
+                case 0x20:
                 case 0x24:
-                    _videoInfo = (byte)stream.ReadByte();
+                    _videoInfo = (byte) stream.ReadByte();
                     break;
                 case 0x03:
                 case 0x04:
@@ -595,19 +597,20 @@ namespace TChapter.Objcet
                 case 0x86:
                 case 0xA1:
                 case 0xA2:
-                    _audioInfo = (byte)stream.ReadByte();
+                    _audioInfo = (byte) stream.ReadByte();
                     LanguageCode = Encoding.ASCII.GetString(stream.ReadBytes(3));
                     break;
                 case 0x90:
                 case 0x91:
+                case 0xA0:
                     LanguageCode = Encoding.ASCII.GetString(stream.ReadBytes(3));
                     break;
                 case 0x92:
-                    CharacterCode = (byte)stream.ReadByte();
+                    CharacterCode = (byte) stream.ReadByte();
                     LanguageCode = Encoding.ASCII.GetString(stream.ReadBytes(3));
                     break;
                 default:
-                    Console.WriteLine($"Unknow StreamCodingType type: {StreamCodingType:X}");
+                    Console.WriteLine($"Unknown StreamCodingType type: {StreamCodingType:X}");
                     break;
             }
             stream.Skip(Length - (stream.Position - position));
@@ -626,10 +629,10 @@ namespace TChapter.Objcet
         public Mark(Stream stream)
         {
             stream.Skip(1);
-            MarkType = (byte)stream.ReadByte();
-            RefToPlayItemID = (ushort)stream.BEInt16();
+            MarkType = (byte) stream.ReadByte();
+            RefToPlayItemID = (ushort) stream.BEInt16();
             MarkTimeStamp = stream.BEInt32();
-            EntryESPID = (ushort)stream.BEInt16();
+            EntryESPID = (ushort) stream.BEInt16();
             Duration = stream.BEInt32();
         }
     }
@@ -644,7 +647,7 @@ namespace TChapter.Objcet
         {
             Length = stream.BEInt32();
             var position = stream.Position;
-            NumberOfPlayListMarks = (ushort)stream.BEInt16();
+            NumberOfPlayListMarks = (ushort) stream.BEInt16();
             Marks = new Mark[NumberOfPlayListMarks];
             for (var i = 0; i < NumberOfPlayListMarks; ++i)
             {
@@ -668,7 +671,7 @@ namespace TChapter.Objcet
             if (Length == 0) return;
             DataBlockStartAddress = stream.BEInt32();
             stream.Skip(3);
-            NumberOfExtDataEntries = (byte)stream.ReadByte();
+            NumberOfExtDataEntries = (byte) stream.ReadByte();
             ExtDataEntries = new ExtDataEntry[NumberOfExtDataEntries];
             for (var i = 0; i < NumberOfExtDataEntries; ++i)
             {
@@ -681,15 +684,15 @@ namespace TChapter.Objcet
     {
         public ushort ExtDataType;
         public ushort ExtDataVersion;
-        public uint ExtDataStartAddres;
+        public uint ExtDataStartAddress;
         public uint ExtDataLength;
 
         public ExtDataEntry(Stream stream)
         {
-            ExtDataType = (ushort)stream.BEInt16();
-            ExtDataVersion = (ushort)stream.BEInt16();
-            ExtDataStartAddres = stream.BEInt32();
-            ExtDataLength = stream.BEInt32();
+            ExtDataType         = (ushort) stream.BEInt16();
+            ExtDataVersion      = (ushort) stream.BEInt16();
+            ExtDataStartAddress = stream.BEInt32();
+            ExtDataLength       = stream.BEInt32();
         }
     }
 

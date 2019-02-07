@@ -44,14 +44,14 @@ namespace TChapter.Util
         {
             var self = data[index];
             return self.Chapters.Where(c => c.Time != TimeSpan.MinValue)
-                .Select(c => c.FramsInfo.ToString().Replace("*", "I").Replace("K", "I")).ToArray();
+                .Select(c => c.FramesInfo.ToString().Replace("*", "I").Replace("K", "I")).ToArray();
         }
 
         public static string[] ToCELLTIMES(this MultiChapterData data, int index = 0)
         {
             var self = data[index];
             return self.Chapters.Where(c => c.Time != TimeSpan.MinValue)
-                .Select(c => ((long) Math.Round(c.Time.TotalSeconds * self.FramesPerSecond)).ToString()).ToArray();
+                .Select(c => ((long) Math.Round((decimal) c.Time.TotalSeconds * self.FramesPerSecond)).ToString()).ToArray();
         }
 
         public static string[] ToTIMECODES(this MultiChapterData data, int index = 0)

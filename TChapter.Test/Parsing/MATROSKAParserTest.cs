@@ -31,7 +31,7 @@ namespace TChapter.Test.Parsing
         public void TestParseMKV()
         {
             IChapterParser parser = new MATROSKAParser(@"C:\Program Files\MKVToolNix\mkvextract.exe");
-            var data = parser.Parse(@"..\..\..\Assert\MKV\00001.mkv");
+            var data = parser.Parse(@"..\..\..\Assets\MKV\00001.mkv");
             Console.WriteLine(data);
             foreach (var chapter in data)
             {
