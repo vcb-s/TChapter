@@ -52,7 +52,7 @@ namespace TChapter.Parsing
                 {
                     SourceName = data.PlayItems[i].FullName,
                     Duration = PTS2Time(playItem.TimeInfo.DeltaTime),
-                    FramesPerSecond = (double)Config.FRAME_RATE[attr.StreamAttributes.FrameRate]
+                    FramesPerSecond = Config.FRAME_RATE[attr.StreamAttributes.FrameRate]
                 };
 
                 var index = i;

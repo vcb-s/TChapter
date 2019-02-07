@@ -53,7 +53,7 @@ namespace TChapter.Parsing
                     var pgc = new ChapterInfo
                     {
                         SourceName = title.Element(ns + "PrimaryAudioVideoClip")?.Attribute("src")?.Value ?? "",
-                        FramesPerSecond = 24D,
+                        FramesPerSecond = 24M,
                         Chapters = new List<Chapter>()
                     };
                     var tickBaseDivisor = (int?)title.Attribute("tickBaseDivisor") ?? 1; //optional
