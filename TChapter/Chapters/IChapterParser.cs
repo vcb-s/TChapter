@@ -27,7 +27,7 @@ namespace TChapter.Chapters
     public interface IChapterParserFromFile
     {
         /// <summary>
-        /// Parses a byte array into an <see cref="IChapterData"/>.
+        /// Parses a file into an <see cref="IChapterData"/>.
         /// </summary>
         /// <param name="path">The path of file to parse.</param>
         /// <returns>The parsed chapter.</returns>

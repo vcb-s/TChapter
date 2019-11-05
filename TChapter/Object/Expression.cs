@@ -62,7 +62,7 @@ namespace TChapter.Object
                 if (token == "(" || token == ")")
                     ret.TokenType = Token.Symbol.Bracket;
                 else
-                ret.TokenType = Token.Symbol.Operator;
+                    ret.TokenType = Token.Symbol.Operator;
             }
             else if (FunctionTokens.ContainsKey(token))
                 ret.TokenType = Token.Symbol.Function;
@@ -414,6 +414,32 @@ namespace TChapter.Object
             {
                 EvalAble = false;
                 Logger.Log(exception);
+                return (decimal)time;
+            }
+        }
+
+        public decimal Eval(double time, decimal fps)
+        {
+            if (!EvalAble) return (decimal)time;
+            try
+            {
+                if (fps < 1e-5M)
+                {
+                    return Eval(new Dictionary<string, decimal>
+                    {
+                        ["t"] = (decimal)time,
+                    });
+                }
+                return Eval(new Dictionary<string, decimal>
+                {
+                    ["t"] = (decimal)time,
+                    ["fps"] = fps
+                });
+            }
+            catch (Exception exception)
+            {
+                EvalAble = false;
+                Console.WriteLine($@"Eval Failed: {exception.Message}");
                 return (decimal)time;
             }
         }
