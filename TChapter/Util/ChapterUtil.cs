@@ -125,6 +125,6 @@ namespace TChapter.Util
 
         public static void SaveAs(this string chapter, string path) => File.WriteAllText(path, chapter, Encoding.UTF8);
 
-        public static void SaveAs(this object chapter, string path) => File.WriteAllText(path, chapter.ToString(), Encoding.UTF8);
+        public static void SaveAs(this object chapter, string path) => File.WriteAllText(path, chapter?.ToString() ?? "", Encoding.UTF8);
     }
 }

@@ -255,6 +255,10 @@ namespace TChapter.Object
 
         public static IEnumerable<Token> BuildPostExpressionStack(string expr)
         {
+            if (expr == null)
+            {
+                throw new ArgumentNullException(nameof(expr));
+            }
             var retStack  = new Stack<Token>();
             var stack     = new Stack<Token>();
             var funcStack = new Stack<Token>();
@@ -343,7 +347,7 @@ namespace TChapter.Object
                 }
             }
 
-            while (stack.Peek().Value != string.Empty)
+            while (!string.IsNullOrEmpty(stack.Peek().Value))
             {
                 retStack.Push(stack.Peek());
                 stack.Pop();
@@ -353,6 +357,10 @@ namespace TChapter.Object
 
         public static decimal Eval(IEnumerable<Token> postfix, Dictionary<string, decimal> values)
         {
+            if (values == null)
+            {
+                throw new ArgumentNullException(nameof(values));
+            }
             var stack = new Stack<Token>();
             foreach (var token in postfix.Reverse())
             {
@@ -459,7 +467,15 @@ namespace TChapter.Object
             }
         }
 
-        public static explicit operator decimal(Expression expr) => expr.Eval();
+        public static explicit operator decimal(Expression expr)
+        {
+            return expr?.Eval() ?? 0M;
+        }
+
+        public decimal ToDecimal()
+        {
+            return (decimal) this;
+        }
 
         private static string RemoveBrackets(string x)
         {

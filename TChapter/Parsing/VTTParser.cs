@@ -37,10 +37,13 @@ namespace TChapter.Parsing
 
         public IChapterData Parse(Stream stream)
         {
-            return new SingleChapterData(ChapterTypeEnum.VTT)
+            using (var reader = new StreamReader(stream, true))
             {
-                Data = GetChapterInfo(new StreamReader(stream, true).ReadToEnd())
-            };
+                return new SingleChapterData(ChapterTypeEnum.VTT)
+                {
+                    Data = GetChapterInfo(reader.ReadToEnd())
+                };
+            }
         }
 
         public static ChapterInfo GetChapterInfo(string text)

@@ -41,7 +41,7 @@ namespace TChapter.Parsing
             return GetChapters(new MPLS(stream));
         }
 
-        public IChapterData GetChapters(MPLS data)
+        public static IChapterData GetChapters(MPLS data)
         {
             var chapters = new MultiChapterData(ChapterTypeEnum.MPLS);
             for (var i = 0; i < data.PlayItems.Length; ++i)

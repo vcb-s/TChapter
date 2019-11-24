@@ -26,28 +26,28 @@ namespace TChapter.Logging
     {
         private const Logger.Level DebugLevel = Logger.Level.Debug;
 
-        public void Log()
+        public static void Log()
         {
             Log("There is no message");
         }
 
-        public void Log(string message)
+        public static void Log(string message)
         {
             Logger.Log(DebugLevel, message);
         }
 
-        public void Log(Exception exception)
+        public static void Log(Exception exception)
         {
-            Logger.Log(DebugLevel, exception.Message);
+            Logger.Log(DebugLevel, exception?.Message ?? "NO MESSAGE");
         }
 
-        public void Log<TClass>(Exception exception) where TClass : class
+        public static void Log<TClass>(Exception exception) where TClass : class
         {
-            var message = $"Log exception -> Message: {exception.Message}\nStackTrace: {exception.StackTrace}";
+            var message = $"Log exception -> Message: {exception?.Message ?? "NO MESSAGE"}\nStackTrace: {exception?.StackTrace ?? "NO TRACE"}";
             Logger.Log<TClass>(DebugLevel, message);
         }
 
-        public void Log<TClass>(string message) where TClass : class
+        public static void Log<TClass>(string message) where TClass : class
         {
             Logger.Log<TClass>(DebugLevel, message);
         }

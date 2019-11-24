@@ -96,7 +96,7 @@ namespace TChapter
 
         public static void Log<TClass>(Exception exception) where TClass : class
         {
-            var message = $"Log exception -> Message: {exception.Message}\nStackTrace: {exception.StackTrace}";
+            var message = $"Log exception -> Message: {exception?.Message ?? "NO MESSAGE"}\nStackTrace: {exception?.StackTrace ?? "NO TRACE" }";
             Log<TClass>(Level.Error, message);
         }
 

@@ -87,7 +87,6 @@ namespace TChapter.Parsing
                 var hours = BcdToInt(playbackBytes[0]);
                 var minutes = BcdToInt(playbackBytes[1]);
                 var seconds = BcdToInt(playbackBytes[2]);
-                var ret = new TimeSpan(hours, minutes, seconds);
                 return new IfoTimeSpan(hours, minutes, seconds, (int) frames, isNTSC);
             }
             catch (Exception exception)
@@ -120,7 +119,7 @@ namespace TChapter.Parsing
         private static long ToFilePosition(byte[] bytes) => ToInt32(bytes) * 0x800L;
     }
 
-    public struct IfoTimeSpan
+    public struct IfoTimeSpan : IEquatable<TimeSpan>
     {
         public long TotalFrames { get; set; }
         public bool IsNTSC { get; set; }
@@ -172,60 +171,69 @@ namespace TChapter.Parsing
             return new TimeSpan((long)Math.Round(time.TotalFrames / time.TimeFrameRate * TimeSpan.TicksPerSecond));
         }
 
+        public TimeSpan ToTimeSpan()
+        {
+            return this;
+        }
+
         #region Operator
         private static void FrameRateModeCheck(IfoTimeSpan t1, IfoTimeSpan t2)
         {
             if (t1.IsNTSC ^ t2.IsNTSC)
-                throw new InvalidOperationException("Unmatch frames rate mode");
+                throw new InvalidOperationException("Unmatched frames rate mode");
         }
 
-        public static IfoTimeSpan operator +(IfoTimeSpan t1, IfoTimeSpan t2)
+
+        public static IfoTimeSpan Add(IfoTimeSpan left, IfoTimeSpan right)
         {
-            FrameRateModeCheck(t1, t2);
-            return new IfoTimeSpan(t1.TotalFrames + t2.TotalFrames, t1.IsNTSC);
+            FrameRateModeCheck(left, right);
+            return new IfoTimeSpan(left.TotalFrames + right.TotalFrames, left.IsNTSC);
         }
 
-        public static IfoTimeSpan operator -(IfoTimeSpan t1, IfoTimeSpan t2)
+        public static IfoTimeSpan Subtract(IfoTimeSpan left, IfoTimeSpan right)
         {
-            FrameRateModeCheck(t1, t2);
-            return new IfoTimeSpan(t1.TotalFrames - t2.TotalFrames, t1.IsNTSC);
+            FrameRateModeCheck(left, right);
+            return new IfoTimeSpan(left.TotalFrames - right.TotalFrames, left.IsNTSC);
         }
 
-        public static bool operator <(IfoTimeSpan t1, IfoTimeSpan t2)
+        public int CompareTo(IfoTimeSpan other)
         {
-            FrameRateModeCheck(t1, t2);
-            return t1.TotalFrames < t2.TotalFrames;
+            FrameRateModeCheck(this, other);
+            var diff = TotalFrames - other.TotalFrames;
+            return diff == 0 ? 0 : diff < 0 ? -1 : 1;
         }
 
-        public static bool operator >(IfoTimeSpan t1, IfoTimeSpan t2)
+
+        public static IfoTimeSpan operator +(IfoTimeSpan left, IfoTimeSpan right)
         {
-            FrameRateModeCheck(t1, t2);
-            return t1.TotalFrames > t2.TotalFrames;
+            return Add(left, right);
         }
 
-        public static bool operator <=(IfoTimeSpan t1, IfoTimeSpan t2)
+        public static IfoTimeSpan operator -(IfoTimeSpan left, IfoTimeSpan right)
         {
-            FrameRateModeCheck(t1, t2);
-            return t1.TotalFrames <= t2.TotalFrames;
+            return Subtract(left, right);
         }
 
-        public static bool operator >=(IfoTimeSpan t1, IfoTimeSpan t2)
-        {
-            FrameRateModeCheck(t1, t2);
-            return t1.TotalFrames >= t2.TotalFrames;
+        public static bool operator <(IfoTimeSpan left, IfoTimeSpan right)
+        { 
+            return left.CompareTo(right) < 0;
         }
 
-        public static bool operator ==(IfoTimeSpan t1, IfoTimeSpan t2)
+        public static bool operator >(IfoTimeSpan left, IfoTimeSpan right)
         {
-            FrameRateModeCheck(t1, t2);
-            return t1.TotalFrames == t2.TotalFrames;
+            return left.CompareTo(right) > 0;
         }
 
-        public static bool operator !=(IfoTimeSpan t1, IfoTimeSpan t2)
+        public static bool operator ==(IfoTimeSpan left, IfoTimeSpan right)
         {
-            FrameRateModeCheck(t1, t2);
-            return t1.TotalFrames != t2.TotalFrames;
+            return left.CompareTo(right) == 0;
         }
+
+        public static bool operator !=(IfoTimeSpan left, IfoTimeSpan right)
+        {
+            return !(left == right);
+        }
+
         #endregion
 
         public override int GetHashCode()
@@ -246,6 +254,12 @@ namespace TChapter.Parsing
         public override string ToString()
         {
             return $"{Hours:D2}:{Minutes:D2}:{Second:D2}.{TotalFrames} [{(IsNTSC ? 'N' : 'P')}]";
+        }
+
+        bool IEquatable<TimeSpan>.Equals(TimeSpan other)
+        {
+            var tick = (long) Math.Round(TotalFrames / TimeFrameRate * TimeSpan.TicksPerSecond);
+            return tick == other.Ticks;
         }
     }
 }

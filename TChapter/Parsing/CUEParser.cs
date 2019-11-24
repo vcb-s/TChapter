@@ -38,7 +38,11 @@ namespace TChapter.Parsing
 
         public IChapterData Parse(Stream stream)
         {
-            return ParseCue(new StreamReader(stream, true).ReadToEnd());
+            using (var reader = new StreamReader(stream, true))
+            {
+                return ParseCue(reader.ReadToEnd());
+            }
+            
         }
 
         private enum NextState

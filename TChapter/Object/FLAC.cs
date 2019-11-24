@@ -44,7 +44,7 @@ namespace TChapter.Object
     }
 
     //https://xiph.org/flac/format.html
-    public class FLAC
+    public sealed class FLAC
     {
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private enum BlockType
@@ -60,6 +60,10 @@ namespace TChapter.Object
 
         public static FLACInfo GetMetadataFromFlac(Stream fs)
         {
+            if (fs == null)
+            {
+                throw new ArgumentNullException(nameof(fs));
+            }
             var info = new FLACInfo { TrueLength = fs.Length };
             var header = Encoding.ASCII.GetString(fs.ReadBytes(4), 0, 4);
             if (header != "fLaC")
