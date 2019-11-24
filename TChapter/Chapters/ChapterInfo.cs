@@ -91,6 +91,52 @@ namespace TChapter.Chapters
             }
         }
 
+        /// <summary>
+        /// 若要使用帧数信息，则必须调用该方法，否则帧数信息为空
+        /// </summary>
+        /// <param name="index">帧数索引，见ChapterUtils.FrameRate</param>
+        /// <param name="settingAccuracy">精确度阈值</param>
+        /// <param name="round">是否帧数取整</param>
+        public void UpdateFrameInfo(int index = 0, decimal settingAccuracy = 0.001M, bool round = true)
+        {
+            index = index == 0 ? GuessFps(settingAccuracy) : index;
+
+            foreach (var chapter in Chapters)
+            {
+                var frames = Expr.Eval(chapter.Time.TotalSeconds, FramesPerSecond) * ChapterUtil.FrameRate[index];
+                if (round)
+                {
+                    var rounded = Math.Round(frames, MidpointRounding.AwayFromZero);
+                    var accuracy = Math.Abs(frames - rounded) < settingAccuracy;
+                    chapter.FramesInfo = $"{rounded}{(accuracy ? " K" : " *")}";
+                }
+                else
+                {
+                    chapter.FramesInfo = $"{frames}";
+                }
+            }
+        }
+
+        private int GuessFps(decimal accuracy)
+        {
+            var result = ChapterUtil.FrameRate.Select(fps =>
+                        this.Chapters.Sum(item =>
+                        item.IsAccuracy(fps, accuracy, this.Expr))).ToList();
+            result[0] = 0; // skip two invalid frame rate.
+            result[5] = 0;
+            var autofpsCode = result.IndexOf(result.Max());
+            this.FramesPerSecond = ChapterUtil.FrameRate[autofpsCode];
+            return autofpsCode == 0 ? 1 : autofpsCode;
+        }
+
         #endregion
+
+        public SingleChapterData ToChapterData()
+        {
+            return new SingleChapterData(ChapterTypeEnum.UNKNOWN)
+            {
+                Data = this
+            };
+        }
     }
 }

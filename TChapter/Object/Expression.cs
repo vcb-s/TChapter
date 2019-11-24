@@ -62,7 +62,7 @@ namespace TChapter.Object
                 if (token == "(" || token == ")")
                     ret.TokenType = Token.Symbol.Bracket;
                 else
-                ret.TokenType = Token.Symbol.Operator;
+                    ret.TokenType = Token.Symbol.Operator;
             }
             else if (FunctionTokens.ContainsKey(token))
                 ret.TokenType = Token.Symbol.Function;
@@ -255,6 +255,10 @@ namespace TChapter.Object
 
         public static IEnumerable<Token> BuildPostExpressionStack(string expr)
         {
+            if (expr == null)
+            {
+                throw new ArgumentNullException(nameof(expr));
+            }
             var retStack  = new Stack<Token>();
             var stack     = new Stack<Token>();
             var funcStack = new Stack<Token>();
@@ -343,7 +347,7 @@ namespace TChapter.Object
                 }
             }
 
-            while (stack.Peek().Value != string.Empty)
+            while (!string.IsNullOrEmpty(stack.Peek().Value))
             {
                 retStack.Push(stack.Peek());
                 stack.Pop();
@@ -353,6 +357,10 @@ namespace TChapter.Object
 
         public static decimal Eval(IEnumerable<Token> postfix, Dictionary<string, decimal> values)
         {
+            if (values == null)
+            {
+                throw new ArgumentNullException(nameof(values));
+            }
             var stack = new Stack<Token>();
             foreach (var token in postfix.Reverse())
             {
@@ -418,6 +426,32 @@ namespace TChapter.Object
             }
         }
 
+        public decimal Eval(double time, decimal fps)
+        {
+            if (!EvalAble) return (decimal)time;
+            try
+            {
+                if (fps < 1e-5M)
+                {
+                    return Eval(new Dictionary<string, decimal>
+                    {
+                        ["t"] = (decimal)time,
+                    });
+                }
+                return Eval(new Dictionary<string, decimal>
+                {
+                    ["t"] = (decimal)time,
+                    ["fps"] = fps
+                });
+            }
+            catch (Exception exception)
+            {
+                EvalAble = false;
+                Console.WriteLine($@"Eval Failed: {exception.Message}");
+                return (decimal)time;
+            }
+        }
+
         public decimal Eval()
         {
             if (!EvalAble) return 0;
@@ -433,7 +467,15 @@ namespace TChapter.Object
             }
         }
 
-        public static explicit operator decimal(Expression expr) => expr.Eval();
+        public static explicit operator decimal(Expression expr)
+        {
+            return expr?.Eval() ?? 0M;
+        }
+
+        public decimal ToDecimal()
+        {
+            return (decimal) this;
+        }
 
         private static string RemoveBrackets(string x)
         {

@@ -38,10 +38,13 @@ namespace TChapter.Parsing
 
         public IChapterData Parse(Stream stream)
         {
-            return new SingleChapterData(ChapterTypeEnum.OGM)
+            using (var reader = new StreamReader(stream, true))
             {
-                Data = GetChapterInfo(new StreamReader(stream, true).ReadToEnd())
-            };
+                return new SingleChapterData(ChapterTypeEnum.OGM)
+                {
+                    Data = GetChapterInfo(reader.ReadToEnd())
+                };
+            }
         }
 
         private static readonly Regex RTimeCodeLine = new Regex(@"^\s*CHAPTER\d+\s*=\s*(.*)", RegexOptions.Compiled);

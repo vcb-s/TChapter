@@ -35,6 +35,7 @@ namespace TChapter.Chapters
 
         public void Add(MultiChapterData chapterData)
         {
+            if (chapterData == null) return;
             foreach (var chapter in chapterData)
             {
                 Add(chapter);

@@ -26,6 +26,7 @@ namespace TChapter.Util
     {
         public static byte[] ReadBytes(this Stream fs, int length)
         {
+            if (fs == null) throw new ArgumentNullException(nameof(fs));
             var ret = new byte[length];
             fs.Read(ret, 0, length);
             return ret;
@@ -33,6 +34,7 @@ namespace TChapter.Util
 
         public static void Skip(this Stream fs, long length)
         {
+            if (fs == null) throw new ArgumentNullException(nameof(fs));
             fs.Seek(length, SeekOrigin.Current);
             if (fs.Position > fs.Length)
                 throw new Exception("Skip out of range");
@@ -95,6 +97,7 @@ namespace TChapter.Util
 
         public BitReader(byte[] source)
         {
+            if (source == null) throw new ArgumentNullException(nameof(source));
             _buffer = new byte[source.Length];
             Array.Copy(source, _buffer, source.Length);
         }

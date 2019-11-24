@@ -52,7 +52,7 @@ namespace TChapter.Parsing
         {
             string arg = $"chapters \"{path}\"";
             var result = RunMkvextract(arg, _mkvextractPath);
-            if (result.StartsWith("Error"))
+            if (result.StartsWith("Error", StringComparison.Ordinal))
                 throw new Exception(result);
             if (string.IsNullOrEmpty(result)) throw new Exception("No Chapter Found");
             return new MemoryStream(Encoding.UTF8.GetBytes(result));

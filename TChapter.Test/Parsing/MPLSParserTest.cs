@@ -38,7 +38,7 @@ namespace TChapter.Test.Parsing
             {
                 foreach (var item in chapter.Chapters)
                 {
-                    Console.WriteLine(item);
+                    Console.WriteLine(item + " " + item.FramesInfo);
                 }
                 Console.WriteLine();
             }

@@ -83,69 +83,69 @@ namespace TChapter.Parsing
             duration = IfoTimeSpan.Zero;
             isNTSC = false;
 
-            var stream = new FileStream(ifoFile, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-            var pcgItPosition = stream.GetPCGIP_Position();
-            var programChainPrograms = -1;
-            var programTime = TimeSpan.Zero;
-            if (programChain >= 0)
+            using (var stream = new FileStream(ifoFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                var chainOffset = stream.GetChainOffset(pcgItPosition, programChain);
-                //programTime = stream.ReadTimeSpan(pcgItPosition, chainOffset, out fpsLocal) ?? TimeSpan.Zero;
-                programChainPrograms = stream.GetNumberOfPrograms(pcgItPosition, chainOffset);
-            }
-            else
-            {
-                var programChains = stream.GetProgramChains(pcgItPosition);
-                for (var curChain = 1; curChain <= programChains; curChain++)
+                var pcgItPosition = stream.GetPCGIP_Position();
+                var programChainPrograms = -1;
+                var programTime = TimeSpan.Zero;
+                if (programChain >= 0)
                 {
-                    var chainOffset = stream.GetChainOffset(pcgItPosition, curChain);
-                    var time = stream.ReadTimeSpan(pcgItPosition, chainOffset, out _);
-                    if (time == null) break;
-
-                    if (time.Value <= programTime) continue;
-                    programChain = curChain;
+                    var chainOffset = stream.GetChainOffset(pcgItPosition, programChain);
+                    //programTime = stream.ReadTimeSpan(pcgItPosition, chainOffset, out fpsLocal) ?? TimeSpan.Zero;
                     programChainPrograms = stream.GetNumberOfPrograms(pcgItPosition, chainOffset);
-                    programTime = time.Value;
                 }
-            }
-            if (programChain < 0) return null;
-
-            chapters.Add(new Chapter { Name = ChapterName.Get(1), Time = TimeSpan.Zero });
-
-            var longestChainOffset = stream.GetChainOffset(pcgItPosition, programChain);
-            int programMapOffset = IFOParserUtil.ToInt16(stream.GetFileBlock((pcgItPosition + longestChainOffset) + 230, 2));
-            int cellTableOffset = IFOParserUtil.ToInt16(stream.GetFileBlock((pcgItPosition + longestChainOffset) + 0xE8, 2));
-            for (var currentProgram = 0; currentProgram < programChainPrograms; ++currentProgram)
-            {
-                int entryCell = stream.GetFileBlock(((pcgItPosition + longestChainOffset) + programMapOffset) + currentProgram, 1)[0];
-                var exitCell = entryCell;
-                if (currentProgram < (programChainPrograms - 1))
-                    exitCell = stream.GetFileBlock(((pcgItPosition + longestChainOffset) + programMapOffset) + (currentProgram + 1), 1)[0] - 1;
-
-                var totalTime = IfoTimeSpan.Zero;
-                for (var currentCell = entryCell; currentCell <= exitCell; currentCell++)
+                else
                 {
-                    var cellStart = cellTableOffset + ((currentCell - 1) * 0x18);
-                    var bytes = stream.GetFileBlock((pcgItPosition + longestChainOffset) + cellStart, 4);
-                    var cellType = bytes[0] >> 6;
-                    if (cellType == 0x00 || cellType == 0x01)
+                    var programChains = stream.GetProgramChains(pcgItPosition);
+                    for (var curChain = 1; curChain <= programChains; curChain++)
                     {
-                        bytes = stream.GetFileBlock(((pcgItPosition + longestChainOffset) + cellStart) + 4, 4);
-                        var time = IFOParserUtil.ReadTimeSpan(bytes, out isNTSC) ?? IfoTimeSpan.Zero;
-                        totalTime += time;
+                        var chainOffset = stream.GetChainOffset(pcgItPosition, curChain);
+                        var time = stream.ReadTimeSpan(pcgItPosition, chainOffset, out _);
+                        if (time == null) break;
+
+                        if (time.Value <= programTime) continue;
+                        programChain = curChain;
+                        programChainPrograms = stream.GetNumberOfPrograms(pcgItPosition, chainOffset);
+                        programTime = time.Value;
                     }
                 }
+                if (programChain < 0) return null;
 
-                //add a constant amount of time for each chapter?
-                //totalTime += TimeSpan.FromMilliseconds(fps != 0 ? (double)1000 / fps / 8D : 0);
+                chapters.Add(new Chapter { Name = ChapterName.Get(1), Time = TimeSpan.Zero });
 
-                duration += totalTime;
-                if (currentProgram + 1 < programChainPrograms)
-                    chapters.Add(new Chapter { Name = ChapterName.Get(currentProgram + 2), Time = duration });
+                var longestChainOffset = stream.GetChainOffset(pcgItPosition, programChain);
+                int programMapOffset = IFOParserUtil.ToInt16(stream.GetFileBlock((pcgItPosition + longestChainOffset) + 230, 2));
+                int cellTableOffset = IFOParserUtil.ToInt16(stream.GetFileBlock((pcgItPosition + longestChainOffset) + 0xE8, 2));
+                for (var currentProgram = 0; currentProgram < programChainPrograms; ++currentProgram)
+                {
+                    int entryCell = stream.GetFileBlock(((pcgItPosition + longestChainOffset) + programMapOffset) + currentProgram, 1)[0];
+                    var exitCell = entryCell;
+                    if (currentProgram < (programChainPrograms - 1))
+                        exitCell = stream.GetFileBlock(((pcgItPosition + longestChainOffset) + programMapOffset) + (currentProgram + 1), 1)[0] - 1;
+
+                    var totalTime = IfoTimeSpan.Zero;
+                    for (var currentCell = entryCell; currentCell <= exitCell; currentCell++)
+                    {
+                        var cellStart = cellTableOffset + ((currentCell - 1) * 0x18);
+                        var bytes = stream.GetFileBlock((pcgItPosition + longestChainOffset) + cellStart, 4);
+                        var cellType = bytes[0] >> 6;
+                        if (cellType == 0x00 || cellType == 0x01)
+                        {
+                            bytes = stream.GetFileBlock(((pcgItPosition + longestChainOffset) + cellStart) + 4, 4);
+                            var time = IFOParserUtil.ReadTimeSpan(bytes, out isNTSC) ?? IfoTimeSpan.Zero;
+                            totalTime += time;
+                        }
+                    }
+
+                    //add a constant amount of time for each chapter?
+                    //totalTime += TimeSpan.FromMilliseconds(fps != 0 ? (double)1000 / fps / 8D : 0);
+
+                    duration += totalTime;
+                    if (currentProgram + 1 < programChainPrograms)
+                        chapters.Add(new Chapter { Name = ChapterName.Get(currentProgram + 2), Time = duration });
+                }
+                return chapters;
             }
-            stream.Dispose();
-            return chapters;
         }
     }
 }

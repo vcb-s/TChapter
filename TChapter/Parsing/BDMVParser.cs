@@ -30,7 +30,7 @@ namespace TChapter.Parsing
 {
     public class BDMVParser : IChapterParser
     {
-        public string _eac3toPath;
+        private readonly string _eac3toPath;
 
         public BDMVParser(string EAC3TOPath)
         {

@@ -28,6 +28,8 @@ namespace TChapter.Util
 {
     public static class ChapterUtil
     {
+        public static readonly decimal[] FrameRate = { 0M, 24000M / 1001, 24M, 25M, 30000M / 1001, 0M, 50M, 60000M / 1001 };
+
         /// <summary>
         /// 将TimeSpan对象转换为 hh:mm:ss.sss 形式的字符串
         /// </summary>
@@ -123,6 +125,6 @@ namespace TChapter.Util
 
         public static void SaveAs(this string chapter, string path) => File.WriteAllText(path, chapter, Encoding.UTF8);
 
-        public static void SaveAs(this object chapter, string path) => File.WriteAllText(path, chapter.ToString(), Encoding.UTF8);
+        public static void SaveAs(this object chapter, string path) => File.WriteAllText(path, chapter?.ToString() ?? "", Encoding.UTF8);
     }
 }
