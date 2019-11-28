@@ -18,6 +18,7 @@
 // ****************************************************************************
 
 using System;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TChapter.Chapters;
 using TChapter.Parsing;
@@ -31,7 +32,8 @@ namespace TChapter.Test.Parsing
         public void TestParseXPL()
         {
             IChapterParser parser = new XPLParser();
-            var data = parser.Parse(@"..\..\..\Assets\XPL\VPLST000.XPL");
+            
+            var data = parser.Parse(Path.Combine(Configuration.TestCaseBasePath, "XPL", "VPLST000.XPL"));
             Console.WriteLine(data);
             foreach (var chapter in data)
             {
@@ -41,6 +43,7 @@ namespace TChapter.Test.Parsing
                 }
                 Console.WriteLine();
             }
+
         }
     }
 }

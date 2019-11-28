@@ -14,13 +14,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <None Update="lib\net45\libmp4v2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="lib\net47\libmp4v2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="lib\netcoreapp3.0\libmp4v2.dll">
+    <None Update="libmp4v2.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

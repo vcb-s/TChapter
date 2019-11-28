@@ -18,6 +18,7 @@
 // ****************************************************************************
 
 using System;
+using System.IO;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TChapter.Chapters;
@@ -44,7 +45,7 @@ namespace TChapter.Test.Parsing
             };
 
             IChapterParser parser = new IFOParser();
-            var data = parser.Parse(@"..\..\..\Assets\IFO\VTS_05_0.IFO");
+            var data = parser.Parse(Path.Combine(Configuration.TestCaseBasePath, "IFO", "VTS_05_0.IFO"));
             Console.WriteLine(data);
 
             Assert.IsTrue(data.Count == 1);

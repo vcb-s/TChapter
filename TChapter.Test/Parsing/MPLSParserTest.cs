@@ -18,6 +18,7 @@
 // ****************************************************************************
 
 using System;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TChapter.Chapters;
 using TChapter.Parsing;
@@ -31,8 +32,7 @@ namespace TChapter.Test.Parsing
         public void TestParseMPLS_HD()
         {
             IChapterParser parser = new MPLSParser();
-            //var data = parser.Parse(@"..\..\..\Assets\MPLS\00001-HD.mpls");
-            var data = parser.Parse(@"..\..\..\Assets\MPLS\00001-HD.mpls");
+            var data = parser.Parse(Path.Combine(Configuration.TestCaseBasePath, "MPLS", "00001-HD.mpls"));
             Console.WriteLine(data);
             foreach (var chapter in data)
             {
@@ -48,7 +48,7 @@ namespace TChapter.Test.Parsing
         public void TestParseMPLS_UHD()
         {
             IChapterParser parser = new MPLSParser();
-            var data = parser.Parse(@"..\..\..\Assets\MPLS\00001-UHD.mpls");
+            var data = parser.Parse(Path.Combine(Configuration.TestCaseBasePath, "MPLS", "00001-UHD.mpls"));
             Console.WriteLine(data);
             foreach (var chapter in data)
             {

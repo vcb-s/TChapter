@@ -92,13 +92,13 @@ namespace TChapter.Test.Object
         [TestMethod()]
         public void Uva12803Test()
         {
-            var path = @"..\..\..\Assets\UVA12803\";
+            var path = Path.Combine(Configuration.TestCaseBasePath, @"UVA12803");
 
             var timer = new System.Diagnostics.Stopwatch();
             timer.Start();
-            var input  = File.ReadAllLines(path + "expression.in");
-            var output = File.ReadAllLines(path + "expression.out");
-            for (int i = 0; i < input.Length; ++i)
+            var input  = File.ReadAllLines(Path.Combine(path, "expression.in"));
+            var output = File.ReadAllLines(Path.Combine(path, "expression.out"));
+            for (var i = 0; i < input.Length; ++i)
             {
                 var tmp = new Expression(input[i]).Eval().ToString("0.00");
                 tmp.Should().Be(output[i]);

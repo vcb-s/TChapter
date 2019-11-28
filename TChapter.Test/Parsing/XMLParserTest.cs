@@ -18,6 +18,7 @@
 // ****************************************************************************
 
 using System;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TChapter.Chapters;
 using TChapter.Parsing;
@@ -31,7 +32,7 @@ namespace TChapter.Test.Parsing
         public void TestParseXML_1()
         {
             IChapterParser parser = new XMLParser();
-            var data = parser.Parse(@"..\..\..\Assets\XML\ordered_chapter.xml");
+            var data = parser.Parse(Path.Combine(Configuration.TestCaseBasePath, "XML", "ordered_chapter.xml"));
             Console.WriteLine(data);
             foreach (var chapter in (data as MultiChapterData))
             {
@@ -47,7 +48,7 @@ namespace TChapter.Test.Parsing
         public void TestParseXML_2()
         {
             IChapterParser parser = new XMLParser();
-            var data = parser.Parse(@"..\..\..\Assets\XML\sub_chapter.xml");
+            var data = parser.Parse(Path.Combine(Configuration.TestCaseBasePath, "XML", "sub_chapter.xml"));
             Console.WriteLine(data);
             foreach (var chapter in data)
             {

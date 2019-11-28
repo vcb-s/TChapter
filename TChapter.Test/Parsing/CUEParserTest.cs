@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -44,7 +45,7 @@ namespace TChapter.Test.Parsing
                 1946, 2305.307, 2579.12, 2906.547, 3270.013, 3456.507, 3652.667, 3950.387, 4277.707
             }.Select(sec => new TimeSpan((long)Math.Round(sec * TimeSpan.TicksPerSecond)));
             IChapterParser parser = new CUEParser();
-            var data = parser.Parse(@"..\..\..\Assets\CUE\example-cue-sheet.cue");
+            var data = parser.Parse(Path.Combine(Configuration.TestCaseBasePath, "CUE", "example-cue-sheet.cue"));
             (data as SingleChapterData).Chapters.Select(i => i.Time).Should().BeEquivalentTo(expected);
         }
 
@@ -52,7 +53,7 @@ namespace TChapter.Test.Parsing
         public void TestParseFLAC()
         {
             IChapterParser parser = new FLACParser();
-            var data = parser.Parse(@"..\..\..\Assets\CUE\example-cue-sheet.flac");
+            var data = parser.Parse(Path.Combine(Configuration.TestCaseBasePath, "CUE", "example-cue-sheet.flac"));
             (data as SingleChapterData).Chapters.Select(i => i.Time).Should().BeEquivalentTo(_expected);
         }
 
@@ -60,7 +61,7 @@ namespace TChapter.Test.Parsing
         public void TestParseTAK()
         {
             IChapterParser parser = new TAKParser();
-            var data = parser.Parse(@"..\..\..\Assets\CUE\example-cue-sheet.tak");
+            var data = parser.Parse(Path.Combine(Configuration.TestCaseBasePath, @"CUE", "example-cue-sheet.tak"));
             (data as SingleChapterData).Chapters.Select(i => i.Time).Should().BeEquivalentTo(_expected);
         }
     }

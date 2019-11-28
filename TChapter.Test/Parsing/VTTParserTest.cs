@@ -18,6 +18,7 @@
 // ****************************************************************************
 
 using System;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TChapter.Chapters;
 using TChapter.Parsing;
@@ -31,7 +32,7 @@ namespace TChapter.Test.Parsing
         public void TestParseVTT()
         {
             IChapterParser parser = new VTTParser();
-            var data = parser.Parse(@"..\..\..\Assets\VTT\00001.vtt");
+            var data = parser.Parse(Path.Combine(Configuration.TestCaseBasePath, "VTT", "00001.vtt"));
             Console.WriteLine(data);
             foreach (var chapter in (data as SingleChapterData).Chapters)
             {
