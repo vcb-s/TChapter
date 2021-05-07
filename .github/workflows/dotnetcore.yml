@@ -8,17 +8,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.0.100
+        dotnet-version: 5.0.x
     - name: Build with dotnet
-      run: dotnet build --configuration Release --framework netcoreapp3.0
+      run: dotnet build --configuration Release --framework net5.0
     - name: Test with dotnet
-      run: dotnet test --configuration Release --framework netcoreapp3.0
+      run: dotnet test --configuration Release --framework net5.0
     - name: Upload artifact
-      uses: actions/upload-artifact@v1.0.0
+      uses: actions/upload-artifact@v2
       with:
         name: 'TChapter.dll'
-        path: /home/runner/work/TChapter/TChapter/TChapter/bin/Release/netcoreapp3.0/TChapter.dll
+        path: /home/runner/work/TChapter/TChapter/TChapter/bin/Release/net5.0/TChapter.dll
