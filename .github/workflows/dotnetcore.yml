@@ -12,7 +12,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 4.5.x
+        dotnet-version: 5.0.x
     - name: Build with dotnet
       run: dotnet build --configuration Release --framework net4.5
     - name: Test with dotnet
@@ -21,4 +21,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: 'TChapter.dll'
-        path: /home/runner/work/TChapter/TChapter/TChapter/bin/Release/net45/TChapter.dll
+        path: /home/runner/work/TChapter/TChapter/TChapter/bin/Release/net/TChapter.dll
