@@ -3,16 +3,21 @@ TChapter
 
 A .NET library for parsing chapter file.
 
-Overview
---------
-
-- [Usage](#usage)
-  - [Parsing](#parsing)
-  - [Saving](#saving)
-  - [Logging](#logging)
-
 Usage
 -----
+
+### Supported file type
+
+- OGM(`.txt`)
+- XML(`.xml`)
+- MPLS from BluRay(`.mpls`)
+- IFO from DVD(`.ifo`)
+- XPL from HDDVD(`.xpl`)
+- CUE plain text or embedded(`.cue`, `.flac`, `.tak`)
+- Matroska file(`.mkv`, `.mka`)
+- Mp4 file(`.mp4`, `.m4a`, `.m4v`)
+- WebVTT(`.vtt`)
+
 ### Parsing
 
 ```C#
@@ -30,8 +35,7 @@ foreach (var chapter in data)
     Console.WriteLine();
 }
 ```
-
-If some types of chapter which will always include only one chapter, it will return a more specific type `SingleChapterData`.
+If some chapter types always contain only one chapter, it will return a more specific type `SingleChapterData`.
 ```C#
 foreach (var chapter in (data as SingleChapterData).Chapters)
 {
@@ -39,18 +43,18 @@ foreach (var chapter in (data as SingleChapterData).Chapters)
 }
 ```
 
-The chapter type such as MPLS may include separated chapters, you can combine these chapters by `chapters.CombineChapter()`
+The chapter type like MPLS may contain separate chapters, you can combine these chapters by calling `chapters.CombineChapter()`.
 
 -----
 ### Saving
 
-You should call the saving method like below, refer to code document for more infomation.
+You should call the save method as below, see the code document for more information.
 
 ```C#
 data.Save(ChapterTypeEnum.XML, "path/to/save/chapter.xml");
 ```
 
------
-### Logging
 
-You can access the [SimpleLogger](https://github.com/jirkapenzes/SimpleLogger) for logging usage.
+## License
+
+Distributed under the GPLv3+ License. See LICENSE for more information.

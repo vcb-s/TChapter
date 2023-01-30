@@ -1,26 +1,11 @@
-﻿// ****************************************************************************
-//
-// Copyright (C) 2017 TautCony (TautCony@vcb-s.com)
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.If not, see<http://www.gnu.org/licenses/>.
-//
-// ****************************************************************************
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: Copyright 2017-2023 TautCony (i@tautcony.xyz)
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Serilog;
 using TChapter.Util;
 
 namespace TChapter.Object
@@ -58,7 +43,7 @@ namespace TChapter.Object
             {
                 foreach (var s in item.STNTable.StreamEntries)
                 {
-                    Logger.Log($"+{s.GetType()}");
+                    Log.Information("stream type: {Type}", s.GetType());
                     StreamAttribution.LogStreamAttributes(s, item.ClipName);
                 }
             }
@@ -701,10 +686,10 @@ namespace TChapter.Object
         public static void LogStreamAttributes(BasicStreamEntry stream, ClipName clipName)
         {
             var streamCodingType = stream.StreamAttributes.StreamCodingType;
-            var result = StreamCoding.TryGetValue(streamCodingType, out string streamCoding);
+            var result = StreamCoding.TryGetValue(streamCodingType, out var streamCoding);
             if (!result) streamCoding = "und";
 
-            Logger.Log($"Stream[{clipName}] Type: {streamCoding}");
+            Log.Information($"Stream[{clipName}] Type: {streamCoding}");
             if (0x01 != streamCodingType && 0x02 != streamCodingType &&
                 0x1b != streamCodingType && 0xea != streamCodingType &&
                 0x24 != streamCodingType)
@@ -712,20 +697,20 @@ namespace TChapter.Object
                 var isAudio = !(0x90 == streamCodingType || 0x91 == streamCodingType);
                 if (0x92 == streamCodingType)
                 {
-                    Logger.Log($"Stream[{clipName}] CharacterCode: {CharacterCode[stream.StreamAttributes.CharacterCode]}");
+                    Log.Information($"Stream[{clipName}] CharacterCode: {CharacterCode[stream.StreamAttributes.CharacterCode]}");
                 }
                 var language = stream.StreamAttributes.LanguageCode;
                 if (language == null || language[0] == '\0') language = "und";
-                Logger.Log($"Stream[{clipName}] Language: {language}");
+                Log.Information($"Stream[{clipName}] Language: {language}");
                 if (isAudio)
                 {
-                    Logger.Log($"Stream[{clipName}] Channel: {Channel[stream.StreamAttributes.AudioFormat]}");
-                    Logger.Log($"Stream[{clipName}] SampleRate: {SampleRate[stream.StreamAttributes.SampleRate]}");
+                    Log.Information($"Stream[{clipName}] Channel: {Channel[stream.StreamAttributes.AudioFormat]}");
+                    Log.Information($"Stream[{clipName}] SampleRate: {SampleRate[stream.StreamAttributes.SampleRate]}");
                 }
                 return;
             }
-            Logger.Log($"Stream[{clipName}] Resolution: {Resolution[stream.StreamAttributes.VideoFormat]}");
-            Logger.Log($"Stream[{clipName}] FrameRate: {FrameRate[stream.StreamAttributes.FrameRate]}");
+            Log.Information($"Stream[{clipName}] Resolution: {Resolution[stream.StreamAttributes.VideoFormat]}");
+            Log.Information($"Stream[{clipName}] FrameRate: {FrameRate[stream.StreamAttributes.FrameRate]}");
         }
 
         private static readonly Dictionary<int, string> StreamCoding = new Dictionary<int, string>

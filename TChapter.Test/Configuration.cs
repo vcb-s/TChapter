@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: Copyright 2017-2023 TautCony (i@tautcony.xyz)
+
+using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TChapter.Test
 {
@@ -33,7 +32,7 @@ namespace TChapter.Test
         private static Platform GetPlatform()
         {
             var windir = Environment.GetEnvironmentVariable("windir");
-            if (!string.IsNullOrEmpty(windir) && windir.Contains(@"\") && Directory.Exists(windir))
+            if (!string.IsNullOrEmpty(windir) && windir.Contains("\\") && Directory.Exists(windir))
             {
                 return Platform.Windows;
             }

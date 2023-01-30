@@ -1,21 +1,5 @@
-﻿// ****************************************************************************
-//
-// Copyright (C) 2017 TautCony (TautCony@vcb-s.com)
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.If not, see<http://www.gnu.org/licenses/>.
-//
-// ****************************************************************************
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: Copyright 2017-2023 TautCony (i@tautcony.xyz)
 
 using System;
 using System.Collections.Generic;
@@ -24,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Serilog;
 using TChapter.Util;
 
 namespace TChapter.Object
@@ -79,11 +64,11 @@ namespace TChapter.Object
                 var blockType = (BlockType)((blockHeader >> 24) & 0x7f);
                 var length = blockHeader & 0xffffff;
                 info.TrueLength -= length;
-                Logger.Log($"|+{blockType} with Length: {length}");
+                Log.Information("|+{BlockType} with Length: {Length}", blockType, length);
                 switch (blockType)
                 {
                     case BlockType.STREAMINFO:
-                        Debug.Assert(length == 34);
+                        Debug.Assert(length == 34, "Stream info block length must be 34");
                         ParseStreamInfo(fs, ref info);
                         break;
                     case BlockType.VORBIS_COMMENT:
@@ -120,12 +105,12 @@ namespace TChapter.Object
             var totalSample = br.GetBits(36);
             var md5 = fs.ReadBytes(16);
             info.RawLength = channelCount * bitPerSample / 8 * totalSample;
-            Logger.Log($" | minimum block size: {minBlockSize}, maximum block size: {maxBlockSize}");
-            Logger.Log($" | minimum frame size: {minFrameSize}, maximum frame size: {maxFrameSize}");
-            Logger.Log($" | Sample rate: {sampleRate}Hz, bits per sample: {bitPerSample}-bit");
-            Logger.Log($" | Channel count: {channelCount}");
+            Log.Information(" | minimum block size: {MinBlockSize}, maximum block size: {MaxBlockSize}", minBlockSize, maxBlockSize);
+            Log.Information(" | minimum frame size: {MinFrameSize}, maximum frame size: {MaxFrameSize}", minFrameSize, maxFrameSize);
+            Log.Information(" | Sample rate: {SampleRate}Hz, bits per sample: {BitPerSample}-bit", sampleRate, bitPerSample);
+            Log.Information(" | Channel count: {ChannelCount}", channelCount);
             var md5String = md5.Aggregate("", (current, item) => current + $"{item:X2}");
-            Logger.Log($" | MD5: {md5String}");
+            Log.Information(" | MD5: {Md5}", md5String);
         }
 
         private static void ParseVorbisComment(Stream fs, ref FLACInfo info)
@@ -135,7 +120,7 @@ namespace TChapter.Object
             var vendorRawStringData = fs.ReadBytes(vendorLength);
             var vendor = Encoding.UTF8.GetString(vendorRawStringData, 0, vendorLength);
             info.Encoder = vendor;
-            Logger.Log($" | Vendor: {vendor}");
+            Log.Information(" | Vendor: {Vendor}", vendor);
             var userCommentListLength = fs.LEInt32();
             for (var i = 0; i < userCommentListLength; ++i)
             {
@@ -147,7 +132,7 @@ namespace TChapter.Object
                 var value = comment.Substring(splitterIndex + 1, comment.Length - 1 - splitterIndex);
                 info.VorbisComment[key] = value;
                 var summary = value.Length > 25 ? value.Substring(0, 25) + "..." : value;
-                Logger.Log($" | [{key}] = '{summary.Replace('\n', ' ')}'");
+                Log.Information(" | [{Key}] = '{Summary}'", key, summary.Replace('\n', ' '));
             }
         }
 
@@ -179,13 +164,13 @@ namespace TChapter.Object
             info.TrueLength -= pictureDataLength;
             info.HasCover = true;
             if (pictureType > 20) pictureType = 21;
-            Logger.Log($" | picture type: {PictureTypeName[pictureType]}");
-            Logger.Log($" | picture format type: {mimeType}");
+            Log.Information(" | picture type: {PictureTypeName}", PictureTypeName[pictureType]);
+            Log.Information(" | picture format type: {MimeType}", mimeType);
             if (descriptionLength > 0)
-                Logger.Log($" | description: {description}");
-            Logger.Log($" | attribute: {pictureWidth}px*{pictureHeight}px@{colorDepth}-bit");
+                Log.Information(" | description: {Description}", description);
+            Log.Information(" | attribute: {PictureWidth}px*{PictureHeight}px@{ColorDepth}-bit", pictureWidth, pictureHeight, colorDepth);
             if (indexedColorCount != 0)
-                Logger.Log($" | indexed-color color: {indexedColorCount}");
+                Log.Information(" | indexed-color color: {IndexedColorCount}", indexedColorCount);
         }
     }
 }

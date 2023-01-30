@@ -1,27 +1,13 @@
-﻿// ****************************************************************************
-//
-// Copyright (C) 2012 Jim Evans (james.h.evans.jr@gmail.com)
-// Copyright (C) 2017 TautCony (TautCony@vcb-s.com)
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.If not, see<http://www.gnu.org/licenses/>.
-//
-// ****************************************************************************
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: Copyright 2012 Jim Evans (james.h.evans.jr@gmail.com)
+// SPDX-FileCopyrightText: Copyright 2017-2023 TautCony (i@tautcony.xyz)
+
 
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using Serilog;
 using TChapter.Chapters;
 using TChapter.Util;
 
@@ -61,7 +47,7 @@ namespace TChapter.Parsing
             var chapterListPointer = IntPtr.Zero;
             var chapterCount = 0;
             var chapterType = MP4ParserUtil.NativeMethods.MP4GetChapters(fileHandle, ref chapterListPointer, ref chapterCount, MP4ParserUtil.NativeMethods.MP4ChapterType.Any);
-            Logger.Log($"Chapter type: {chapterType}");
+            Log.Information("Chapter type: {ChapterType}", chapterType);
             if (chapterType != MP4ParserUtil.NativeMethods.MP4ChapterType.None && chapterCount != 0)
             {
                 var currentChapterPointer = chapterListPointer;
@@ -71,7 +57,7 @@ namespace TChapter.Parsing
                     var currentChapter = currentChapterPointer.ReadStructure<MP4ParserUtil.NativeMethods.MP4Chapter>();
                     var duration = TimeSpan.FromMilliseconds(currentChapter.duration);
                     var title = GetString(currentChapter.title);
-                    Logger.Log($"{title} {duration}");
+                    Log.Information("{Title} {Duration}", title, duration);
                     chapter.Chapters.Add(new Chapter {Time = current, Name = title, Number = i + 1});
                     current += duration;
                     currentChapterPointer = IntPtr.Add(currentChapterPointer, Marshal.SizeOf(currentChapter));

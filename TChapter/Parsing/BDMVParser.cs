@@ -1,21 +1,5 @@
-﻿// ****************************************************************************
-//
-// Copyright (C) 2017 TautCony (TautCony@vcb-s.com)
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.If not, see<http://www.gnu.org/licenses/>.
-//
-// ****************************************************************************
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: Copyright 2017-2023 TautCony (i@tautcony.xyz)
 
 using System;
 using System.Collections.Generic;
@@ -23,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Serilog;
 using TChapter.Chapters;
 using TChapter.Util;
 
@@ -75,12 +60,12 @@ namespace TChapter.Parsing
                     if (title.Success)
                     {
                         bdmvTitle = title.Groups["title"].Value;
-                        Logger.Log($"Disc Title: {bdmvTitle}");
+                        Log.Information("Disc Title: {BdmvTitle}", bdmvTitle);
                     }
                 }
             }
 
-            var workingPath = Directory.GetParent(location).FullName;
+            var workingPath = Directory.GetParent(location)?.FullName;
             location = location.Substring(location.LastIndexOf('\\') + 1);
             string text;
             using (var process = ProcessUtil.StartProcess(_eac3toPath, location.WrapWithQuotes(), workingPath))
@@ -89,10 +74,10 @@ namespace TChapter.Parsing
             }
             if (text.Contains("HD DVD / Blu-Ray disc structure not found."))
             {
-                Logger.Log(text);
+                Log.Debug("eac3to output:\n\n{Output}", text);
                 throw new Exception("May be the path is too complex or directory contains nonAscii characters");
             }
-            Logger.Log("\r\nDisc Info:\r\n" + text);
+            Log.Information("Disc Info:\n\n{Output}", text);
 
             var matched = new HashSet<string>();
 
@@ -101,7 +86,7 @@ namespace TChapter.Parsing
                 var mpls = match.Groups["mpls"].Value;
                 var dur = match.Groups["dur"].Value;
                 if (!matched.Add(mpls)) continue;
-                var item = (new MPLSParser().Parse(Path.Combine(path, mpls))).CombineChapter();
+                var item = new MPLSParser().Parse(Path.Combine(path, mpls)).CombineChapter();
                 item.Data.Duration = TimeSpan.Parse(dur);
                 list.Add(item);
             }

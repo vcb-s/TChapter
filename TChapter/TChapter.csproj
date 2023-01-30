@@ -1,20 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net45;net47;net5.0</TargetFrameworks>
+    <TargetFrameworks>net45;net48;net6.0</TargetFrameworks>
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>TautCony</Authors>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugSymbols>False</DebugSymbols>
+    <DebugType>None</DebugType>
+  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NuGet.Build.Tasks.Pack" Version="5.9.1">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="Serilog" Version="2.12.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="libmp4v2.dll">
+    <ContentWithTargetPath Include="mp4v2\x64\libmp4v2.dll" Condition=" '$(platform)' == 'x64' ">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+      <TargetPath>libmp4v2.dll</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="mp4v2\x86\libmp4v2.dll" Condition=" '$(platform)' == 'x86' ">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>libmp4v2.dll</TargetPath>
+    </ContentWithTargetPath>
   </ItemGroup>
 </Project>

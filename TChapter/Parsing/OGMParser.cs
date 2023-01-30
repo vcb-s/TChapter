@@ -1,26 +1,11 @@
-﻿// ****************************************************************************
-//
-// Copyright (C) 2017 TautCony (TautCony@vcb-s.com)
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.If not, see<http://www.gnu.org/licenses/>.
-//
-// ****************************************************************************
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: Copyright 2017-2023 TautCony (i@tautcony.xyz)
 
 using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Serilog;
 using TChapter.Chapters;
 using TChapter.Util;
 
@@ -100,7 +85,7 @@ namespace TChapter.Parsing
                         break;
                     case LineState.LError:
                         if (info.Chapters.Count == 0) throw new Exception("Unable to Parse this ogm file");
-                        Logger.Log($"+Interrupt: Happened at [{line}]");    //将已解析的部分返回
+                        Log.Warning("Interrupt: Happened at [{Line}]", line);    //将已解析的部分返回
                         state = LineState.LFin;
                         break;
                     case LineState.LFin:

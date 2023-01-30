@@ -1,24 +1,11 @@
-﻿// ****************************************************************************
-//
-// Copyright (C) 2017 TautCony (TautCony@vcb-s.com)
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.If not, see<http://www.gnu.org/licenses/>.
-//
-// ****************************************************************************
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: Copyright 2017-2023 TautCony (i@tautcony.xyz)
 
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Xml;
 using TChapter.Chapters;
@@ -120,12 +107,10 @@ namespace TChapter.Util
         public static StringBuilder ToJSON(this MultiChapterData data, int index = 0, bool autoGenName = false)
         {
             var self = data[index];
-            var jsonBuilder = new StringBuilder();
-            jsonBuilder.Append("{");
-            jsonBuilder.Append("\"sourceName\":");
-            jsonBuilder.Append(data.ChapterType == ChapterTypeEnum.MPLS ? $"\"{self.SourceName}.m2ts\"," : "\"undefined\",");
-            jsonBuilder.Append("\"chapter\":");
-            jsonBuilder.Append("[[");
+            var jsonObject = new Dictionary<string, dynamic>();
+            var chapters = new List<dynamic>();
+            jsonObject.Add("sourceName", data.ChapterType == ChapterTypeEnum.MPLS ? $"{self.SourceName}.m2ts" : "undefined");
+            jsonObject.Add("chapter", chapters);
 
             var baseTime = TimeSpan.Zero;
             Chapter prevChapter = null;
@@ -134,23 +119,37 @@ namespace TChapter.Util
             {
                 if (chapter.Time == TimeSpan.MinValue && prevChapter != null)
                 {
-                    baseTime = prevChapter.Time;//update base time
+                    baseTime = prevChapter.Time; // update base time
                     name = ChapterName.GetChapterName();
                     var initChapterName = autoGenName ? name() : prevChapter.Name;
-                    jsonBuilder.Remove(jsonBuilder.Length - 1, 1);
-                    jsonBuilder.Append("],[");
-                    jsonBuilder.Append($"{{\"name\":\"{initChapterName}\",\"time\":0}},");
+                    chapters.Add(new Dictionary<string, dynamic>
+                    {
+                        { "name", initChapterName },
+                        { "time", 0 }
+                    });
                     continue;
                 }
                 var time = chapter.Time - baseTime;
                 var chapterName = (autoGenName ? name() : chapter.Name);
-                jsonBuilder.Append($"{{\"name\":\"{chapterName}\",\"time\":{time.TotalSeconds}}},");
+
+                chapters.Add(new Dictionary<string, dynamic>
+                {
+                     { "name", chapterName },
+                     { "time", time.TotalSeconds }
+                });
                 prevChapter = chapter;
             }
-            jsonBuilder.Remove(jsonBuilder.Length - 1, 1);
-            jsonBuilder.Append("]]");
-            jsonBuilder.Append("}");
-            return jsonBuilder;
+            return new StringBuilder(Serialize(jsonObject));
+        }
+
+        private static string Serialize<T>(T aObject) where T : new()
+        {
+            var ms = new MemoryStream();
+            var ser = new DataContractJsonSerializer(typeof(T));
+            ser.WriteObject(ms, aObject);
+            var json = ms.ToArray();
+            ms.Close();
+            return Encoding.UTF8.GetString(json, 0, json.Length);
         }
     }
 }

@@ -1,25 +1,11 @@
-﻿// ****************************************************************************
-//
-// Copyright (C) 2017 TautCony (TautCony@vcb-s.com)
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.If not, see<http://www.gnu.org/licenses/>.
-//
-// ****************************************************************************
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: Copyright 2017-2023 TautCony (i@tautcony.xyz)
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Serilog;
 using TChapter.Chapters;
 using TChapter.Object;
 using TChapter.Util;
@@ -59,13 +45,15 @@ namespace TChapter.Parsing
                 Func<Mark, bool> filter = item => item.MarkType == 0x01 && item.RefToPlayItemID == index;
                 if (!data.Marks.Any(filter))
                 {
+                    Log.Warning("PlayItem without any marks, index: {Index}", index);
+                    info.Chapters = new List<Chapter> { new Chapter { Time = PTS2Time(0), Number = 1, Name = "Chapter 1" } };
                     chapters.Add(info);
                     continue;
                 }
                 var offset = data.Marks.First(filter).MarkTimeStamp;
                 if (playItem.TimeInfo.INTime < offset)
                 {
-                    Logger.Log($"{{PlayItems[{i}]: first time stamp => {offset}, in time => {playItem.TimeInfo.INTime}}}");
+                    Log.Information("{{PlayItems[{I}]: first time stamp => {Offset}, in time => {InTime}}}", i, offset, playItem.TimeInfo.INTime);
                     offset = playItem.TimeInfo.INTime;
                 }
                 var name = new ChapterName();

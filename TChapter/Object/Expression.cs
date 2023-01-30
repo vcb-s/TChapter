@@ -1,26 +1,11 @@
-﻿// ****************************************************************************
-//
-// Copyright (C) 2017 TautCony (TautCony@vcb-s.com)
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.If not, see<http://www.gnu.org/licenses/>.
-//
-// ****************************************************************************
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: Copyright 2017-2023 TautCony (i@tautcony.xyz)
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Serilog;
 
 namespace TChapter.Object
 {
@@ -224,7 +209,7 @@ namespace TChapter.Object
             var variable = varRet.ToString();
             if (IsDigit(varRet[0]))
             {
-                if (!decimal.TryParse(variable, out decimal number))
+                if (!decimal.TryParse(variable, out var number))
                     throw new Exception($"Invalid number token [{variable}]");
                 return new Token(number) {Value = variable};
             }
@@ -421,7 +406,7 @@ namespace TChapter.Object
             catch (Exception exception)
             {
                 EvalAble = false;
-                Logger.Log(exception);
+                Log.Error(exception, "Failed to evaluate expression");
                 return (decimal)time;
             }
         }
@@ -462,7 +447,7 @@ namespace TChapter.Object
             catch (Exception exception)
             {
                 EvalAble = false;
-                Logger.Log(exception);
+                Log.Error(exception, "Failed to evaluate expression");
                 return 0;
             }
         }
@@ -559,7 +544,7 @@ namespace TChapter.Object
                     {
                         throw new Exception($"{funcName}: Invalid expression, require operands.");
                     }
-                    stack.Push($"({operand1} {item} {operand2} {":"} {operand3})");
+                    stack.Push($"({operand1} {item} {operand2} : {operand3})");
                 }
                 else
                 {
