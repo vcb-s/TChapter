@@ -13,8 +13,13 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <None Update="libmp4v2.dll">
+    <ContentWithTargetPath Include="mp4v2\x64\libmp4v2.dll" Condition=" '$(platform)' == 'x64' ">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+      <TargetPath>libmp4v2.dll</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="mp4v2\x86\libmp4v2.dll" Condition=" '$(platform)' == 'x86' ">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>libmp4v2.dll</TargetPath>
+    </ContentWithTargetPath>
   </ItemGroup>
 </Project>
