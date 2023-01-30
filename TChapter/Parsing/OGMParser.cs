@@ -21,6 +21,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Serilog;
 using TChapter.Chapters;
 using TChapter.Util;
 
@@ -100,7 +101,7 @@ namespace TChapter.Parsing
                         break;
                     case LineState.LError:
                         if (info.Chapters.Count == 0) throw new Exception("Unable to Parse this ogm file");
-                        Logger.Log($"+Interrupt: Happened at [{line}]");    //将已解析的部分返回
+                        Log.Warning("Interrupt: Happened at [{Line}]", line);    //将已解析的部分返回
                         state = LineState.LFin;
                         break;
                     case LineState.LFin:

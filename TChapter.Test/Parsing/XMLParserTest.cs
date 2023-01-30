@@ -34,7 +34,7 @@ namespace TChapter.Test.Parsing
             IChapterParser parser = new XMLParser();
             var data = parser.Parse(Path.Combine(Configuration.TestCaseBasePath, "XML", "ordered_chapter.xml"));
             Console.WriteLine(data);
-            foreach (var chapter in (data as MultiChapterData))
+            foreach (var chapter in data as MultiChapterData)
             {
                 foreach (var item in chapter.Chapters)
                 {

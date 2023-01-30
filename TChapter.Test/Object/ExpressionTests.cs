@@ -18,14 +18,14 @@ namespace TChapter.Test.Object
             new Expression(actual).Eval().Should().BeInRange(expected - 1e-10M, expected + 1e-10M);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ExpressionConvertTest()
         {
             new Expression("2^10%10   + 6 \t///comment sample").ToString().Should().Be("2 10 ^ 10 % 6 +");
             new Expression("((a+b)*(c+d))/(((e)))").ToString().Should().Be("a b + c d + * e /");
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ExpressionPostFixTest()
         {
             var ret = new Expression("a b + c d + * e /".Split());
@@ -34,7 +34,7 @@ namespace TChapter.Test.Object
             exp.ToString().Should().Be(ret.ToString());
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ExpressionWEvalTest()
         {
             EvalAreEqual(2.9289682539682539682539682539682539M, "1+1/2+1/3+1/4+1/5+1/6+1/7+1/8+1/9+1/10");
@@ -44,7 +44,7 @@ namespace TChapter.Test.Object
             EvalAreEqual(65536, "2^(2^(2^2))");
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void EmptyExpressionTest()
         {
             var ret = new Expression(string.Empty);
@@ -52,7 +52,7 @@ namespace TChapter.Test.Object
             ret.Eval().Should().Be(0M);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ExpressionWithFunctionTest()
         {
             var ret = new Expression("floor(1.133) + floor(log10(1023)) - ceil(0.9)");
@@ -60,7 +60,7 @@ namespace TChapter.Test.Object
             ret.Eval().Should().Be(3M);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FunctionAbsTest()
         {
             EvalAreEqual(1908.8976M, "abs(-1908.8976)");
@@ -70,7 +70,7 @@ namespace TChapter.Test.Object
             EvalAreEqual(1908, "abs(1908)");
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FunctionSctTest()
         {
             EvalAreNearly(1M, "sin(asin(1))");
@@ -78,7 +78,7 @@ namespace TChapter.Test.Object
             EvalAreNearly(1M, "tan(atan(1))");
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FunctionLog10Test()
         {
             EvalAreEqual(3.0M, "log10(1000.0)");
@@ -89,7 +89,7 @@ namespace TChapter.Test.Object
             EvalAreEqual(-0.908382862219234M, "log10(0.12348583358871)");
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void Uva12803Test()
         {
             var path = Path.Combine(Configuration.TestCaseBasePath, @"UVA12803");
@@ -108,7 +108,7 @@ namespace TChapter.Test.Object
             Console.WriteLine($"\nDuration: {timer.Elapsed.Milliseconds}ms");
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void Postfix2InfixTest()
         {
             Expression.Postfix2Infix("x y 64 * + z 256 * + 3 /").Should().Be("((x + (y * 64)) + (z * 256)) / 3");
@@ -116,7 +116,7 @@ namespace TChapter.Test.Object
         }
 
         /*
-        [TestMethod()]
+        [TestMethod]
         public void TernaryOperatorTest()
         {
             //x>22 ? x<96 ? 4*(x-16)^2+40000 : 65536:0

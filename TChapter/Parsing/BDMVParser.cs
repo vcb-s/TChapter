@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Serilog;
 using TChapter.Chapters;
 using TChapter.Util;
 
@@ -75,12 +76,12 @@ namespace TChapter.Parsing
                     if (title.Success)
                     {
                         bdmvTitle = title.Groups["title"].Value;
-                        Logger.Log($"Disc Title: {bdmvTitle}");
+                        Log.Information("Disc Title: {BdmvTitle}", bdmvTitle);
                     }
                 }
             }
 
-            var workingPath = Directory.GetParent(location).FullName;
+            var workingPath = Directory.GetParent(location)?.FullName;
             location = location.Substring(location.LastIndexOf('\\') + 1);
             string text;
             using (var process = ProcessUtil.StartProcess(_eac3toPath, location.WrapWithQuotes(), workingPath))
@@ -89,10 +90,10 @@ namespace TChapter.Parsing
             }
             if (text.Contains("HD DVD / Blu-Ray disc structure not found."))
             {
-                Logger.Log(text);
+                Log.Debug("eac3to output:\n\n{Output}", text);
                 throw new Exception("May be the path is too complex or directory contains nonAscii characters");
             }
-            Logger.Log("\r\nDisc Info:\r\n" + text);
+            Log.Information("Disc Info:\n\n{Output}", text);
 
             var matched = new HashSet<string>();
 
@@ -101,7 +102,7 @@ namespace TChapter.Parsing
                 var mpls = match.Groups["mpls"].Value;
                 var dur = match.Groups["dur"].Value;
                 if (!matched.Add(mpls)) continue;
-                var item = (new MPLSParser().Parse(Path.Combine(path, mpls))).CombineChapter();
+                var item = new MPLSParser().Parse(Path.Combine(path, mpls)).CombineChapter();
                 item.Data.Duration = TimeSpan.Parse(dur);
                 list.Add(item);
             }

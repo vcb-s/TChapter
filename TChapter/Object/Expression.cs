@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Serilog;
 
 namespace TChapter.Object
 {
@@ -224,7 +225,7 @@ namespace TChapter.Object
             var variable = varRet.ToString();
             if (IsDigit(varRet[0]))
             {
-                if (!decimal.TryParse(variable, out decimal number))
+                if (!decimal.TryParse(variable, out var number))
                     throw new Exception($"Invalid number token [{variable}]");
                 return new Token(number) {Value = variable};
             }
@@ -421,7 +422,7 @@ namespace TChapter.Object
             catch (Exception exception)
             {
                 EvalAble = false;
-                Logger.Log(exception);
+                Log.Error(exception, "Failed to evaluate expression");
                 return (decimal)time;
             }
         }
@@ -462,7 +463,7 @@ namespace TChapter.Object
             catch (Exception exception)
             {
                 EvalAble = false;
-                Logger.Log(exception);
+                Log.Error(exception, "Failed to evaluate expression");
                 return 0;
             }
         }
@@ -559,7 +560,7 @@ namespace TChapter.Object
                     {
                         throw new Exception($"{funcName}: Invalid expression, require operands.");
                     }
-                    stack.Push($"({operand1} {item} {operand2} {":"} {operand3})");
+                    stack.Push($"({operand1} {item} {operand2} : {operand3})");
                 }
                 else
                 {

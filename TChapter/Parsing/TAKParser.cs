@@ -47,11 +47,11 @@ namespace TChapter.Parsing
 
         private static Stream GetCueSheet(Stream stream)
         {
-            int state = 0;
-            long beginPos = stream.Position;
+            var state = 0;
+            var beginPos = stream.Position;
             while (stream.Position < stream.Length)
             {
-                char peak = (char) stream.ReadByte();
+                var peak = (char) stream.ReadByte();
                 if (peak >= 'A' && peak <= 'Z')
                     peak = (char) (peak - 'A' + 'a');
                 switch (peak)

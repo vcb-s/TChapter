@@ -59,5 +59,21 @@ namespace TChapter.Test.Parsing
                 Console.WriteLine();
             }
         }
+        
+        [TestMethod]
+        public void TestParseMPLS_Empty()
+        {
+            IChapterParser parser = new MPLSParser();
+            var data = parser.Parse(Path.Combine(Configuration.TestCaseBasePath, "MPLS", "00001-Empty.mpls"));
+            Console.WriteLine(data);
+            foreach (var chapter in data)
+            {
+                foreach (var item in chapter.Chapters)
+                {
+                    Console.WriteLine(item);
+                }
+                Console.WriteLine();
+            }
+        }
     }
 }

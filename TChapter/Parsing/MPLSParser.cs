@@ -18,8 +18,10 @@
 // ****************************************************************************
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Serilog;
 using TChapter.Chapters;
 using TChapter.Object;
 using TChapter.Util;
@@ -59,13 +61,15 @@ namespace TChapter.Parsing
                 Func<Mark, bool> filter = item => item.MarkType == 0x01 && item.RefToPlayItemID == index;
                 if (!data.Marks.Any(filter))
                 {
+                    Log.Warning("PlayItem without any marks, index: {Index}", index);
+                    info.Chapters = new List<Chapter> { new Chapter { Time = PTS2Time(0), Number = 1, Name = "Chapter 1" } };
                     chapters.Add(info);
                     continue;
                 }
                 var offset = data.Marks.First(filter).MarkTimeStamp;
                 if (playItem.TimeInfo.INTime < offset)
                 {
-                    Logger.Log($"{{PlayItems[{i}]: first time stamp => {offset}, in time => {playItem.TimeInfo.INTime}}}");
+                    Log.Information("{{PlayItems[{I}]: first time stamp => {Offset}, in time => {InTime}}}", i, offset, playItem.TimeInfo.INTime);
                     offset = playItem.TimeInfo.INTime;
                 }
                 var name = new ChapterName();

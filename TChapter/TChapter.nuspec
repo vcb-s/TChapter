@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A .NET (C#) library for parsing chapter file.</description>
     <releaseNotes>Publish to nuget.org</releaseNotes>
-    <copyright>Copyright 2019</copyright>
+    <copyright>Copyright 2023</copyright>
     <tags>Chapter DVD Blu-Ray Video</tags>
   </metadata>
 </package>

@@ -50,7 +50,7 @@ namespace TChapter.Parsing
 
         public Stream GetChapters(string path)
         {
-            string arg = $"chapters \"{path}\"";
+            var arg = $"chapters \"{path}\"";
             var result = RunMkvextract(arg, _mkvextractPath);
             if (result.StartsWith("Error", StringComparison.Ordinal))
                 throw new Exception(result);
