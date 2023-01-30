@@ -1,6 +1,6 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2012 Jim Evans (james.h.evans.jr@gmail.com)
-// SPDX-FileCopyrightText: Copyright 2017-2023 TautCony
+// SPDX-FileCopyrightText: Copyright 2012 Jim Evans (james.h.evans.jr@gmail.com)
+// SPDX-FileCopyrightText: Copyright 2017-2023 TautCony (i@tautcony.xyz)
 
 
 using System;

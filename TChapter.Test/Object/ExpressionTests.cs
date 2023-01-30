@@ -1,4 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: Copyright 2017-2023 TautCony (i@tautcony.xyz)
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
 using FluentAssertions;
@@ -6,7 +9,7 @@ using TChapter.Object;
 
 namespace TChapter.Test.Object
 {
-    [TestClass()]
+    [TestClass]
     public class ExpressionTests
     {
         private static void EvalAreEqual(decimal expected, string actual)

@@ -1,4 +1,7 @@
-﻿using System;
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: Copyright 2017-2023 TautCony (i@tautcony.xyz)
+
+using System;
 using System.IO;
 using System.Reflection;
 
