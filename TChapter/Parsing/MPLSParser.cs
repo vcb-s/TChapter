@@ -18,6 +18,7 @@
 // ****************************************************************************
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TChapter.Chapters;
@@ -59,6 +60,8 @@ namespace TChapter.Parsing
                 Func<Mark, bool> filter = item => item.MarkType == 0x01 && item.RefToPlayItemID == index;
                 if (!data.Marks.Any(filter))
                 {
+                    Logger.Log($"PlayItem without any marks, index: {index}");
+                    info.Chapters = new List<Chapter> { new Chapter { Time = PTS2Time(0), Number = 1, Name = "Chapter 1" } };
                     chapters.Add(info);
                     continue;
                 }

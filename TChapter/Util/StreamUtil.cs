@@ -28,7 +28,8 @@ namespace TChapter.Util
         {
             if (fs == null) throw new ArgumentNullException(nameof(fs));
             var ret = new byte[length];
-            fs.Read(ret, 0, length);
+            var rdLen = fs.Read(ret, 0, length);
+            if (rdLen != length) throw new EndOfStreamException();
             return ret;
         }
 
