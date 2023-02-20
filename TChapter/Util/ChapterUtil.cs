@@ -49,8 +49,11 @@ namespace TChapter.Util
             var hour        = int.Parse(timeMatch.Groups["Hour"].Value);
             var minute      = int.Parse(timeMatch.Groups["Minute"].Value);
             var second      = int.Parse(timeMatch.Groups["Second"].Value);
-            var millisecond = int.Parse(timeMatch.Groups["Millisecond"].Value);
-            return new TimeSpan(0, hour, minute, second, millisecond);
+            var rawMillisecond = timeMatch.Groups["Millisecond"].Value;
+            var millisecond = long.Parse(rawMillisecond) / Math.Pow(10, rawMillisecond.Length - 3);
+
+            var tick = (long)(millisecond * TimeSpan.TicksPerMillisecond);
+            return new TimeSpan(0, hour, minute, second).Add(TimeSpan.FromTicks(tick));
         }
 
         public static string ToCueTimeStamp(this TimeSpan input)
