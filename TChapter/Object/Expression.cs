@@ -213,12 +213,12 @@ namespace TChapter.Object
                     throw new Exception($"Invalid number token [{variable}]");
                 return new Token(number) {Value = variable};
             }
-            if (FunctionTokens.ContainsKey(variable))
-                return new Token(variable, Token.Symbol.Function) {ParaCount = FunctionTokens[variable]};
+            if (FunctionTokens.TryGetValue(variable, out var token))
+                return new Token(variable, Token.Symbol.Function) {ParaCount = token};
             if (OperatorTokens.Contains($"\0{variable}\0"))
                 return new Token(variable, Token.Symbol.Operator) { ParaCount = 2 };
-            if (MathDefines.ContainsKey(variable))
-                return new Token(MathDefines[variable]) {Value = variable};
+            if (MathDefines.TryGetValue(variable, out var define))
+                return new Token(define) {Value = variable};
             return new Token(variable, Token.Symbol.Variable);
         }
 

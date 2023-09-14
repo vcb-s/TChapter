@@ -22,8 +22,8 @@ namespace TChapter.Parsing
         public IChapterData Parse(Stream stream)
         {
             var info = FLAC.GetMetadataFromFlac(stream);
-            if (info.VorbisComment.ContainsKey("cuesheet"))
-                return new CUEParser().Parse(new MemoryStream(Encoding.UTF8.GetBytes(info.VorbisComment["cuesheet"])));
+            if (info.VorbisComment.TryGetValue("cuesheet", out var value))
+                return new CUEParser().Parse(new MemoryStream(Encoding.UTF8.GetBytes(value)));
             throw new Exception("No cuesheet found in FLAC file");
         }
     }

@@ -42,7 +42,6 @@ namespace TChapter.Parsing
         public async Task<IChapterData> GetChapterAsync(string location)
         {
             var list = new MultiChapterData(ChapterTypeEnum.BDMV);
-            var bdmvTitle = string.Empty;
             var path = Path.Combine(location, "BDMV", "PLAYLIST");
             if (!Directory.Exists(path))
             {
@@ -56,10 +55,10 @@ namespace TChapter.Parsing
                 if (xmlFile != null)
                 {
                     var xmlText = File.ReadAllText(xmlFile);
-                    var title = Regex.Match(xmlText, @"<di:name>(?<title>[^<]*)</di:name>");
+                    var title = Regex.Match(xmlText, "<di:name>(?<title>[^<]*)</di:name>");
                     if (title.Success)
                     {
-                        bdmvTitle = title.Groups["title"].Value;
+                        var bdmvTitle = title.Groups["title"].Value;
                         Log.Information("Disc Title: {BdmvTitle}", bdmvTitle);
                     }
                 }

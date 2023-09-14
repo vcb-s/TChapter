@@ -69,7 +69,7 @@ namespace TChapter.Chapters
         public void UpdateInfo(string chapterNameTemplate)
         {
             if (string.IsNullOrWhiteSpace(chapterNameTemplate)) return;
-            using (var cn = chapterNameTemplate.Trim(' ', '\r', '\n').Split('\n').ToList().GetEnumerator()) //移除首尾多余空行
+            using (var cn = chapterNameTemplate.Trim(' ', '\r', '\n').Split('\n').ToList().GetEnumerator())
             {
                 Chapters.ForEach(item => item.Name = cn.MoveNext() ? cn.Current : item.Name.Trim('\r')); //确保无多余换行符
             }

@@ -96,17 +96,22 @@ namespace TChapter.Parsing
                 }
                 if (programChain < 0) return null;
 
-                chapters.Add(new Chapter { Name = ChapterName.Get(1), Time = TimeSpan.Zero });
+                chapters.Add(new Chapter {Name = ChapterName.Get(1), Time = TimeSpan.Zero});
 
                 var longestChainOffset = stream.GetChainOffset(pcgItPosition, programChain);
-                int programMapOffset = IFOParserUtil.ToInt16(stream.GetFileBlock((pcgItPosition + longestChainOffset) + 230, 2));
-                int cellTableOffset = IFOParserUtil.ToInt16(stream.GetFileBlock((pcgItPosition + longestChainOffset) + 0xE8, 2));
+                int programMapOffset =
+                    IFOParserUtil.ToInt16(stream.GetFileBlock((pcgItPosition + longestChainOffset) + 230, 2));
+                int cellTableOffset =
+                    IFOParserUtil.ToInt16(stream.GetFileBlock((pcgItPosition + longestChainOffset) + 0xE8, 2));
                 for (var currentProgram = 0; currentProgram < programChainPrograms; ++currentProgram)
                 {
-                    int entryCell = stream.GetFileBlock(((pcgItPosition + longestChainOffset) + programMapOffset) + currentProgram, 1)[0];
+                    int entryCell =
+                        stream.GetFileBlock(((pcgItPosition + longestChainOffset) + programMapOffset) + currentProgram,
+                            1)[0];
                     var exitCell = entryCell;
                     if (currentProgram < (programChainPrograms - 1))
-                        exitCell = stream.GetFileBlock(((pcgItPosition + longestChainOffset) + programMapOffset) + (currentProgram + 1), 1)[0] - 1;
+                        exitCell = stream.GetFileBlock(
+                            ((pcgItPosition + longestChainOffset) + programMapOffset) + (currentProgram + 1), 1)[0] - 1;
 
                     var totalTime = IfoTimeSpan.Zero;
                     for (var currentCell = entryCell; currentCell <= exitCell; currentCell++)
@@ -127,7 +132,7 @@ namespace TChapter.Parsing
 
                     duration += totalTime;
                     if (currentProgram + 1 < programChainPrograms)
-                        chapters.Add(new Chapter { Name = ChapterName.Get(currentProgram + 2), Time = duration });
+                        chapters.Add(new Chapter {Name = ChapterName.Get(currentProgram + 2), Time = duration});
                 }
                 return chapters;
             }
