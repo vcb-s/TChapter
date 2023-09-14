@@ -79,23 +79,6 @@
           "Serilog": "2.10.0"
         }
       }
-    },
-    "net8.0": {
-      "Serilog": {
-        "type": "Direct",
-        "requested": "[3.0.1, )",
-        "resolved": "3.0.1",
-        "contentHash": "E4UmOQ++eNJax1laE+lws7E3zbhKgHsGJbO7ra0yE5smUh+5FfUPIKKBxM3MO1tK4sgpQke6/pLReDxIc/ggNw=="
-      },
-      "Serilog.Sinks.Console": {
-        "type": "Direct",
-        "requested": "[4.1.0, )",
-        "resolved": "4.1.0",
-        "contentHash": "K6N5q+5fetjnJPvCmkWOpJ/V8IEIoMIB1s86OzBrbxwTyHxdx3pmz4H+8+O/Dc/ftUX12DM1aynx/dDowkwzqg==",
-        "dependencies": {
-          "Serilog": "2.10.0"
-        }
-      }
     }
   }
 }
