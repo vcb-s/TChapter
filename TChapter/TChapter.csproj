@@ -12,6 +12,7 @@
     <Authors>TautCony</Authors>
     <Copyright>Copyright (C) 2017-2023 TautCony.
 Released under the GNU GPLv3+.</Copyright>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <DebugSymbols>False</DebugSymbols>

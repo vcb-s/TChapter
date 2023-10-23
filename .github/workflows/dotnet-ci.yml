@@ -22,7 +22,7 @@ jobs:
     - name: Test with dotnet
       env:
         DOTNET_CLI_TELEMETRY_OPTOUT: true
-      run: dotnet test --configuration ${{ matrix.configuration }} --framework net6.0
+      run: dotnet test --configuration ${{ matrix.configuration }} --framework net6.0 --verbosity normal
 
     - name: Build with dotnet
       env:
