@@ -311,12 +311,16 @@ namespace TChapter.Object
                         {
                             retStack.Push(Token.Zero);
                         }
-                        else while (lastToken.TokenType != Token.Symbol.Bracket &&
-                                GetPriority(lastToken) >= GetPriority(token))
+                        else
                         {
-                            retStack.Push(lastToken);
-                            stack.Pop();
-                            lastToken = stack.Peek();
+                            while (lastToken.TokenType != Token.Symbol.Bracket &&
+                                   GetPriority(lastToken) >= GetPriority(token) &&
+                                   !(lastToken.Value == "^" && token.Value == "^"))
+                            {
+                                retStack.Push(lastToken);
+                                stack.Pop();
+                                lastToken = stack.Peek();
+                            }
                         }
                         stack.Push(token);
                         break;
