@@ -60,10 +60,10 @@ namespace TChapter.Object
     internal class MplsHeader
     {
         public TypeIndicator TypeIndicator;
-        public uint PlayListStartAddress;
-        public uint PlayListMarkStartAddress;
-        public uint ExtensionDataStartAddress;
-        public AppInfoPlayList AppInfoPlayList;
+        public uint PlayListStartAddress { get; set; }
+        public uint PlayListMarkStartAddress { get; set; }
+        public uint ExtensionDataStartAddress { get; set; }
+        public AppInfoPlayList AppInfoPlayList { get; set; }
         //20bytes reserved
         public MplsHeader(Stream stream)
         {
@@ -85,17 +85,17 @@ namespace TChapter.Object
 
     internal class AppInfoPlayList
     {
-        public uint Length;
+        public uint Length { get; set; }
         //1byte reserved
-        public byte PlaybackType;
+        public byte PlaybackType { get; set; }
         //if PlaybackType == 0x02 || PlaybackType == 0x03:
-        public ushort PlaybackCount;
-        public UOMaskTable UOMaskTable;
+        public ushort PlaybackCount { get; set; }
+        public UOMaskTable UOMaskTable { get; set; }
 
-        public ushort FlagField { private get; set; }
-        public bool RandomAccessFlag   => ((FlagField >> 15) & 1) == 1;
-        public bool AudioMixFlag       => ((FlagField >> 14) & 1) == 1;
-        public bool LosslessBypassFlag => ((FlagField >> 13) & 1) == 1;
+        private readonly ushort _flagField;
+        public bool RandomAccessFlag   => ((_flagField >> 15) & 1) == 1;
+        public bool AudioMixFlag       => ((_flagField >> 14) & 1) == 1;
+        public bool LosslessBypassFlag => ((_flagField >> 13) & 1) == 1;
 
         public AppInfoPlayList(Stream stream)
         {
@@ -111,7 +111,7 @@ namespace TChapter.Object
             {
                 stream.Skip(2);
                 UOMaskTable = new UOMaskTable(stream);
-                FlagField   = (ushort) stream.BEInt16();
+                _flagField   = (ushort) stream.BEInt16();
             }
             stream.Skip(Length - (stream.Position - position));
         }
@@ -203,12 +203,12 @@ namespace TChapter.Object
 
     internal class PlayList
     {
-        public uint Length;
+        public uint Length { get; set; }
         //2bytes reserved
-        public ushort NumberOfPlayItems;
-        public ushort NumberOfSubPaths;
-        public PlayItem[] PlayItems;
-        public SubPath[] SubPaths;
+        public ushort NumberOfPlayItems { get; set; }
+        public ushort NumberOfSubPaths { get; set; }
+        public PlayItem[] PlayItems { get; set; }
+        public SubPath[] SubPaths { get; set; }
 
         public PlayList(Stream stream)
         {
@@ -232,8 +232,8 @@ namespace TChapter.Object
 
     public class ClipName
     {
-        public string ClipInformationFileName;//5
-        public string ClipCodecIdentifier;//4
+        public string ClipInformationFileName { get; set; }//5
+        public string ClipCodecIdentifier { get; set; }//4
 
         public ClipName(Stream stream)
         {
@@ -249,8 +249,8 @@ namespace TChapter.Object
 
     public class ClipNameWithRef
     {
-        public ClipName ClipName;
-        public byte RefToSTCID;
+        public ClipName ClipName { get; set; }
+        public byte RefToSTCID { get; set; }
 
         public ClipNameWithRef(Stream stream)
         {
@@ -261,8 +261,8 @@ namespace TChapter.Object
 
     public class TimeInfo
     {
-        public uint INTime;
-        public uint OUTTime;
+        public uint INTime { get; set; }
+        public uint OUTTime { get; set; }
 
         public uint DeltaTime => OUTTime - INTime;
 
@@ -275,22 +275,22 @@ namespace TChapter.Object
 
     public class PlayItem
     {
-        public ushort Length;
-        public ClipName ClipName;
+        public ushort Length { get; set; }
+        public ClipName ClipName { get; set; }
         private readonly ushort _flagField1;
         public bool IsMultiAngle => ((_flagField1 >> 4) & 1) == 1;
         public byte ConnectionCondition => (byte)(_flagField1 & 0x0f);
-        public byte RefToSTCID;
-        public TimeInfo TimeInfo;
-        public UOMaskTable UOMaskTable;
+        public byte RefToSTCID { get; set; }
+        public TimeInfo TimeInfo { get; set; }
+        public UOMaskTable UOMaskTable { get; set; }
         private readonly byte _flagField2;
         public bool PlayItemRandomAccessFlag => (_flagField2 >> 7) == 1;
-        public byte StillMode;
+        public byte StillMode { get; set; }
         //if StillMode == 0x01:
-        public ushort StillTime;
+        public ushort StillTime { get; set; }
         //if IsMultiAngle:
-        public MultiAngle MultiAngle;
-        public STNTable STNTable;
+        public MultiAngle MultiAngle { get; set; }
+        public STNTable STNTable { get; set; }
 
         public PlayItem(Stream stream)
         {
@@ -329,11 +329,11 @@ namespace TChapter.Object
 
     public class MultiAngle
     {
-        public byte NumberOfAngles;
+        public byte NumberOfAngles { get; set; }
         private readonly byte _flagField;
         public bool IsDifferentAudios => _flagField >> 2 == 1;
         public bool IsSeamlessAngleChange => ((_flagField >> 1) & 0x01) == 1;
-        public ClipNameWithRef[] Angles;
+        public ClipNameWithRef[] Angles { get; set; }
 
         public MultiAngle(Stream stream)
         {
@@ -349,13 +349,13 @@ namespace TChapter.Object
 
     public class SubPath
     {
-        public uint Length;
+        public uint Length { get; set; }
         //1byte reserved
-        public byte SubPathType;
+        public byte SubPathType { get; set; }
         private readonly ushort _flagField;
         public bool IsRepeatSubPath => (_flagField & 1) == 1;
-        public byte NumberOfSubPlayItems;
-        public SubPlayItem[] SubPlayItems;
+        public byte NumberOfSubPlayItems { get; set; }
+        public SubPlayItem[] SubPlayItems { get; set; }
 
         public SubPath(Stream stream)
         {
@@ -376,20 +376,20 @@ namespace TChapter.Object
 
     public class SubPlayItem
     {
-        public ushort Length;
-        public ClipName ClipName;
+        public ushort Length { get; set; }
+        public ClipName ClipName { get; set; }
         //3bytes reserved
         //3bits reserved
         private readonly byte _flagField;
         private byte ConnectionCondition => (byte)(_flagField >> 1);
         private bool IsMultiClipEntries  => (_flagField & 1) == 1;
-        public byte RefToSTCID;
-        public TimeInfo TimeInfo;
-        public ushort SyncPlayItemID;
-        public uint SyncStartPTS;
+        public byte RefToSTCID { get; set; }
+        public TimeInfo TimeInfo { get; set; }
+        public ushort SyncPlayItemID { get; set; }
+        public uint SyncStartPTS { get; set; }
         //if IsMultiClipEntries == 1:
-        public byte NumberOfMultiClipEntries;
-        public ClipNameWithRef[] MultiClipNameEntries;
+        public byte NumberOfMultiClipEntries { get; set; }
+        public ClipNameWithRef[] MultiClipNameEntries { get; set; }
 
         public SubPlayItem(Stream stream)
         {
@@ -418,17 +418,18 @@ namespace TChapter.Object
 
     public class STNTable
     {
-        public ushort Length;
+        public ushort Length { get; set; }
         //2bytes reserve
-        public byte NumberOfPrimaryVideoStreamEntries;
-        public byte NumberOfPrimaryAudioStreamEntries;
-        public byte NumberOfPrimaryPGStreamEntries;
-        public byte NumberOfPrimaryIGStreamEntries;
-        public byte NumberOfSecondaryAudioStreamEntries;
-        public byte NumberOfSecondaryVideoStreamEntries;
-        public byte NumberOfSecondaryPGStreamEntries;
+        public byte NumberOfPrimaryVideoStreamEntries { get; set; }
+        public byte NumberOfPrimaryAudioStreamEntries { get; set; }
+        // ReSharper disable once MemberCanBePrivate.Global
+        public byte NumberOfPrimaryPGStreamEntries { get; set; }
+        public byte NumberOfPrimaryIGStreamEntries { get; set; }
+        public byte NumberOfSecondaryAudioStreamEntries { get; set; }
+        public byte NumberOfSecondaryVideoStreamEntries { get; set; }
+        public byte NumberOfSecondaryPGStreamEntries { get; set; }
 
-        public BasicStreamEntry[] StreamEntries;
+        public BasicStreamEntry[] StreamEntries { get; set; }
 
         public STNTable(Stream stream)
         {
@@ -466,8 +467,8 @@ namespace TChapter.Object
 
     public class BasicStreamEntry
     {
-        public StreamEntry StreamEntry;
-        public StreamAttributes StreamAttributes;
+        public StreamEntry StreamEntry { get; set; }
+        public StreamAttributes StreamAttributes { get; set; }
         public BasicStreamEntry(Stream stream)
         {
             StreamEntry      = new StreamEntry(stream);
@@ -512,12 +513,12 @@ namespace TChapter.Object
 
     public class StreamEntry
     {
-        public byte Length;
-        public byte StreamType;
+        public byte Length { get; set; }
+        public byte StreamType { get; set; }
 
-        public byte RefToSubPathID;
-        public byte RefToSubClipID;
-        public ushort RefToStreamPID;
+        public byte RefToSubPathID { get; set; }
+        public byte RefToSubClipID { get; set; }
+        public ushort RefToStreamPID { get; set; }
 
         public StreamEntry(Stream stream)
         {
@@ -545,16 +546,16 @@ namespace TChapter.Object
 
     public class StreamAttributes
     {
-        public byte Length;
-        public byte StreamCodingType;
+        public byte Length { get; set; }
+        public byte StreamCodingType { get; set; }
         private readonly byte _videoInfo;
         public byte VideoFormat => (byte)(_videoInfo >> 4);
         public byte FrameRate =>   (byte)(_videoInfo & 0xf);
         private readonly byte _audioInfo;
         public byte AudioFormat => (byte)(_audioInfo >> 4);
         public byte SampleRate =>  (byte)(_audioInfo & 0xf);
-        public byte CharacterCode;
-        public string LanguageCode;//3
+        public byte CharacterCode { get; set; }
+        public string LanguageCode { get; set; }//3
 
         public StreamAttributes(Stream stream)
         {
@@ -605,11 +606,11 @@ namespace TChapter.Object
     public class Mark
     {
         //1byte reserved
-        public byte MarkType;
-        public ushort RefToPlayItemID;
-        public uint MarkTimeStamp;
-        public ushort EntryESPID;
-        public uint Duration;
+        public byte MarkType { get; set; }
+        public ushort RefToPlayItemID { get; set; }
+        public uint MarkTimeStamp { get; set; }
+        public ushort EntryESPID { get; set; }
+        public uint Duration { get; set; }
 
         public Mark(Stream stream)
         {
@@ -624,9 +625,9 @@ namespace TChapter.Object
 
     internal class PlayListMark
     {
-        public uint Length;
-        public ushort NumberOfPlayListMarks;
-        public Mark[] Marks;
+        public uint Length { get; set; }
+        public ushort NumberOfPlayListMarks { get; set; }
+        public Mark[] Marks { get; set; }
 
         public PlayListMark(Stream stream)
         {
@@ -644,11 +645,11 @@ namespace TChapter.Object
 
     internal class ExtensionData
     {
-        public uint Length;
-        public uint DataBlockStartAddress;
+        public uint Length { get; set; }
+        public uint DataBlockStartAddress { get; set; }
         //3bytes reserved
-        public byte NumberOfExtDataEntries;
-        public ExtDataEntry[] ExtDataEntries;
+        public byte NumberOfExtDataEntries { get; set; }
+        public ExtDataEntry[] ExtDataEntries { get; set; }
 
         public ExtensionData(Stream stream)
         {
@@ -689,7 +690,7 @@ namespace TChapter.Object
             var result = StreamCoding.TryGetValue(streamCodingType, out var streamCoding);
             if (!result) streamCoding = "und";
 
-            Log.Information($"Stream[{clipName}] Type: {streamCoding}");
+            Log.Information("Stream[{ClipName}] Type: {StreamCoding}", clipName, streamCoding);
             if (0x01 != streamCodingType && 0x02 != streamCodingType &&
                 0x1b != streamCodingType && 0xea != streamCodingType &&
                 0x24 != streamCodingType)
@@ -697,20 +698,20 @@ namespace TChapter.Object
                 var isAudio = !(0x90 == streamCodingType || 0x91 == streamCodingType);
                 if (0x92 == streamCodingType)
                 {
-                    Log.Information($"Stream[{clipName}] CharacterCode: {CharacterCode[stream.StreamAttributes.CharacterCode]}");
+                    Log.Information("Stream[{ClipName}] CharacterCode: {Code}", clipName, CharacterCode[stream.StreamAttributes.CharacterCode]);
                 }
                 var language = stream.StreamAttributes.LanguageCode;
                 if (language == null || language[0] == '\0') language = "und";
-                Log.Information($"Stream[{clipName}] Language: {language}");
+                Log.Information("Stream[{ClipName}] Language: {Language}", clipName, language);
                 if (isAudio)
                 {
-                    Log.Information($"Stream[{clipName}] Channel: {Channel[stream.StreamAttributes.AudioFormat]}");
-                    Log.Information($"Stream[{clipName}] SampleRate: {SampleRate[stream.StreamAttributes.SampleRate]}");
+                    Log.Information("Stream[{ClipName}] Channel: {Channel}", clipName, Channel[stream.StreamAttributes.AudioFormat]);
+                    Log.Information("Stream[{ClipName}] SampleRate: {Rate}", clipName, SampleRate[stream.StreamAttributes.SampleRate]);
                 }
                 return;
             }
-            Log.Information($"Stream[{clipName}] Resolution: {Resolution[stream.StreamAttributes.VideoFormat]}");
-            Log.Information($"Stream[{clipName}] FrameRate: {FrameRate[stream.StreamAttributes.FrameRate]}");
+            Log.Information("Stream[{ClipName}] Resolution: {Resolution}", clipName, Resolution[stream.StreamAttributes.VideoFormat]);
+            Log.Information("Stream[{ClipName}] FrameRate: {Rate}", clipName, FrameRate[stream.StreamAttributes.FrameRate]);
         }
 
         private static readonly Dictionary<int, string> StreamCoding = new Dictionary<int, string>

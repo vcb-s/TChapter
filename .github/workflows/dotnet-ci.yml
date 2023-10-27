@@ -22,7 +22,7 @@ jobs:
     - name: Test with dotnet
       env:
         DOTNET_CLI_TELEMETRY_OPTOUT: true
-      run: dotnet test --configuration ${{ matrix.configuration }} --framework net6.0
+      run: dotnet test --configuration ${{ matrix.configuration }} --framework net6.0 --verbosity normal
 
     - name: Build with dotnet
       env:
@@ -33,4 +33,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: TChapter-${{ matrix.runtime-identifier }}-net6.0
-        path: TChapter/bin/${{ matrix.configuration }}/net6.0/publish/
+        path: TChapter/bin/${{ matrix.configuration }}/net6.0/${{ matrix.runtime-identifier }}/publish/

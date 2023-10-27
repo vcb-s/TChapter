@@ -12,21 +12,35 @@ namespace TChapter.Test.Parsing
     [TestClass]
     public class MATROSKAParserTest
     {
+        public static string GetFullPath(string fileName)
+        {
+            if (File.Exists(fileName))
+                return Path.GetFullPath(fileName);
+
+            var values = Environment.GetEnvironmentVariable("PATH") ?? "";
+            foreach (var path in values.Split(Path.PathSeparator))
+            {
+                var fullPath = Path.Combine(path, fileName);
+                if (File.Exists(fullPath))
+                    return fullPath;
+            }
+            return null;
+        }
+        
         [TestMethod]
         public void TestParseMKV()
         {
-            if (Configuration.CurrentPlatform != Platform.Windows)
-            {
-                Console.WriteLine("mkv file is only supported on Windows.");
-                return;
-            }
-
-            if (!File.Exists(@"C:\Program Files\MKVToolNix\mkvextract.exe"))
+            var mkvextractPath = Configuration.CurrentPlatform == Platform.Windows
+                ? @"C:\Program Files\MKVToolNix\mkvextract.exe"
+                : GetFullPath("mkvextract");
+            
+            if (!File.Exists(mkvextractPath))
             {
                 Console.WriteLine("mkvextract not found, skip this test case.");
                 return;
             }
-            IChapterParser parser = new MATROSKAParser(@"C:\Program Files\MKVToolNix\mkvextract.exe");
+
+            IChapterParser parser = new MATROSKAParser(mkvextractPath);
             var data = parser.Parse(Path.Combine(Configuration.TestCaseBasePath, "MKV", "00001.mkv"));
             Console.WriteLine(data);
             foreach (var chapter in data)

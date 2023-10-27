@@ -12,7 +12,7 @@ using TChapter.Chapters;
 
 namespace TChapter.Util
 {
-    static class ConvertUtil
+    internal static class ConvertUtil
     {
         public static StringBuilder ToOGM(this MultiChapterData data, int index = 0, bool autoGenName = false)
         {
@@ -130,7 +130,7 @@ namespace TChapter.Util
                     continue;
                 }
                 var time = chapter.Time - baseTime;
-                var chapterName = (autoGenName ? name() : chapter.Name);
+                var chapterName = autoGenName ? name() : chapter.Name;
 
                 chapters.Add(new Dictionary<string, dynamic>
                 {

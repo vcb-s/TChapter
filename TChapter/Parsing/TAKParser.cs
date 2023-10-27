@@ -21,8 +21,8 @@ namespace TChapter.Parsing
         public IChapterData Parse(Stream stream)
         {
             var header = new byte[4];
-            stream.Read(header, 0, 4);
-            if (Encoding.ASCII.GetString(header, 0, 4) != "tBaK")
+            var len = stream.Read(header, 0, 4);
+            if (len != 4 || Encoding.ASCII.GetString(header, 0, 4) != "tBaK")
                 throw new InvalidDataException($"Except an tak but get an {Encoding.ASCII.GetString(header, 0, 4)}");
             stream.Seek(Math.Max(-20480, -stream.Length), SeekOrigin.End);
 

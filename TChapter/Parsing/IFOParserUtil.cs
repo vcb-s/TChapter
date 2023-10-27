@@ -16,7 +16,9 @@ namespace TChapter.Parsing
             if (position < 0) throw new Exception("Invalid Ifo file");
             var buf = new byte[count];
             ifoStream.Seek(position, SeekOrigin.Begin);
-            ifoStream.Read(buf, 0, count);
+            var len = ifoStream.Read(buf, 0, count);
+            if (len != count)
+                throw new Exception("Invalid Ifo file");
             return buf;
         }
 
@@ -201,7 +203,7 @@ namespace TChapter.Parsing
         }
 
         public static bool operator <(IfoTimeSpan left, IfoTimeSpan right)
-        { 
+        {
             return left.CompareTo(right) < 0;
         }
 

@@ -26,7 +26,7 @@ namespace TChapter.Parsing
             {
                 return ParseCue(reader.ReadToEnd());
             }
-            
+
         }
 
         private enum NextState

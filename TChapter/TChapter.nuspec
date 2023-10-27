@@ -1,18 +1,20 @@
 <?xml version="1.0"?>
-<package >
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>TChapter</id>
-    <version>1.1.0.0</version>
+    <version>1.1.1.0</version>
     <title>TChapter</title>
     <authors>TautCony</authors>
-    <owners>TautCony</owners>
-    <licenseUrl>https://github.com/vcb-s/TChapter/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/vcb-s/TChapter</projectUrl>
-    <!--iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl-->
+    <!--icon>ICON_PATH_HERE_OR_DELETE_THIS_LINE</icon-->
+    <license type="expression">GPL-3.0-or-later</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A .NET (C#) library for parsing chapter file.</description>
     <releaseNotes>Publish to nuget.org</releaseNotes>
-    <copyright>Copyright 2017-2023</copyright>
+    <copyright>Copyright 2017-2023 TautCony</copyright>
     <tags>Chapter DVD Blu-Ray Video</tags>
   </metadata>
+  <files>
+    <file src="..\README.md" target="docs\" />
+  </files>
 </package>
