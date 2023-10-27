@@ -7,7 +7,7 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1.0.0</Version>
+    <Version>1.1.1.0</Version>
     <Title>TChapter</Title>
     <Authors>TautCony</Authors>
     <Copyright>Copyright (C) 2017-2023 TautCony.
